@@ -1,6 +1,6 @@
 // Run: node test.mjs
 import assert from 'node:assert/strict';
-import { nextStreak, displayStreak, pickDaily, today, audioFile, audioTexts, linkEnglish } from './public/logic.js';
+import { nextStreak, displayStreak, pickDaily, today, audioFile, audioTexts, linkEnglish, mergeProgress } from './public/logic.js';
 import { readFileSync, existsSync } from 'node:fs';
 
 assert.equal(audioFile('Check, please.'), 'check-please.mp3');
@@ -17,6 +17,15 @@ assert.deepEqual(nextStreak({ last: '2026-10-31', count: 2 }, d('2026-11-01')), 
 assert.equal(displayStreak({ last: '2026-10-20', count: 5 }, d('2026-10-21')), 5);
 assert.equal(displayStreak({ last: '2026-10-19', count: 5 }, d('2026-10-21')), 0);
 assert.equal(today(d('2026-01-05')), '2026-01-05');
+
+const local = { aud: 'kids', streak: { last: '2026-10-21', count: 2 }, 'got:kids': ['k1', 'k2'] };
+const remote = { aud: 'adults', streak: { last: '2026-10-20', count: 9 }, 'got:kids': ['k2', 'k3'], 'got:adults': ['a1'] };
+assert.deepEqual(mergeProgress(local, remote), {
+  aud: 'adults', streak: { last: '2026-10-21', count: 2 }, 'got:kids': ['k1', 'k2', 'k3'], 'got:adults': ['a1'],
+});
+assert.deepEqual(mergeProgress(local, {}), local);
+assert.deepEqual(mergeProgress({}, remote), remote);
+assert.deepEqual(mergeProgress({ streak: { last: 'x', count: 1 } }, { streak: { last: 'x', count: 3 } }).streak.count, 3);
 
 const cards = [1, 2, 3, 4, 5, 6, 7].map((i) => ({ id: 'c' + i }));
 assert.deepEqual(pickDaily(cards, ['c1', 'c3']).map((c) => c.id), ['c2', 'c4', 'c5', 'c6', 'c7']);

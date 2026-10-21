@@ -54,3 +54,15 @@ export const linkEnglish = (s) =>
     const t = trimRun(m);
     return `<button class="en" lang="en" data-say="${t.replace(/"/g, '&quot;')}">${t}</button>${m.slice(t.length)}`;
   });
+
+// Combine local and cloud progress so neither side loses anything.
+// Shape: { aud: 'kids', streak: {last, count}, 'got:kids': ['k1', ...], ... }
+export function mergeProgress(local, remote) {
+  const out = { ...local, ...remote };
+  for (const k of Object.keys(out)) {
+    if (k.startsWith('got:')) out[k] = [...new Set([...(local[k] ?? []), ...(remote[k] ?? [])])];
+  }
+  const a = local.streak, b = remote.streak;
+  if (a && b) out.streak = a.last > b.last || (a.last === b.last && a.count > b.count) ? a : b;
+  return out;
+}

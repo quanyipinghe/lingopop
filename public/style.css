@@ -88,3 +88,9 @@ button.tile:active, .big-btn:active, .opt:not(:disabled):active, .tile-l:not(:di
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
 .en { font: inherit; background: none; border: 0; padding: 0; color: var(--grape); text-decoration: underline dotted; text-underline-offset: 3px; }
+
+.account h2 { margin-top: 0; }
+.account label { display: block; font-weight: 700; margin: 12px 0; }
+.account input { display: block; width: 100%; margin-top: 6px; padding: 12px; font: inherit; border: 3px solid var(--ink); border-radius: 12px; }
+.account .no { text-align: center; min-height: 1.2em; margin: 0; }
+.account .link { display: block; margin: 0 auto; }

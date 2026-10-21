@@ -5,7 +5,8 @@ A playful way to learn English, one little discovery at a time.
 
 > 少一点枯燥，多一点“原来如此”。
 
-纯静态站点（HTML/CSS/原生 JS），无构建步骤，进度存在浏览器 localStorage。
+纯静态站点（HTML/CSS/原生 JS），无构建步骤，进度存在浏览器 localStorage；
+可选登录一个共享账号，把进度同步到 Cloudflare KV（`functions/api/progress.js`）。
 发音由开源模型 [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M)（Apache-2.0，音色 `af_heart`）预先生成。
 
 ## 本地运行
@@ -22,6 +23,18 @@ A playful way to learn English, one little discovery at a time.
 
 方式二（Git 集成）: Cloudflare 控制台 → Workers & Pages → 创建 Pages 项目 → 连接 GitHub 仓库 `lingopop`，
 构建命令留空，输出目录填 `public`。
+
+## 进度同步（账号）
+
+首页点「☁️ 登录 / 注册」，每个人可以创建自己的账号（用户名 + 密码），各自的进度分开保存在 Cloudflare KV。
+登录时本机进度与云端合并（发现的卡取并集，连续打卡取较新的一份）；退出时先上传再清空本机，下一个人登录不会串号。
+
+    npx wrangler kv namespace create lingopop   # 把输出的 id 填进 wrangler.toml
+
+KV 里每个账号两个键: `user:<用户名小写>`（加盐哈希的密码）和 `progress:<用户名小写>`。
+忘记密码: 删掉 `user:` 键后用同名重新注册，进度还在
+
+    npx wrangler kv key delete "user:小明" --binding LP --remote
 
 ## 添加内容
 
