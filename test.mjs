@@ -47,7 +47,7 @@ assert.deepEqual(migrate({ aud: 'adults', lv: 'L1' }), { lv: 'L1' });
 
 // Content sanity: ids unique across levels, topics exist, quiz shape valid, audio present.
 const seen = new Set();
-const EMOJI = /^\p{Extended_Pictographic}/u;
+const EMOJI = /^(\p{Extended_Pictographic}|[0-9]\uFE0F\u20E3)/u; // keycaps like 1️⃣ count as pictures
 for (const f of readdirSync('public/data').filter((f) => f.endsWith('.json'))) {
   const { topics, cards: list } = JSON.parse(readFileSync(`public/data/${f}`, 'utf8'));
   const tids = new Set(topics.map((t) => t.id));
