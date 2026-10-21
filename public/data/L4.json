@@ -1,0 +1,9 @@
+{
+  "topics": [
+    {"id": "shop", "emoji": "🛍️", "name": "逛商店", "kind": "talk"}
+  ],
+  "cards": [
+    {"id": "a14", "topic": "shop", "emoji": "🛍️", "word": "just looking", "zh": "随便看看", "fact": "店员问 Can I help you?，你只是逛逛的话，就说 I'm just looking, thanks。", "quiz": {"type": "listen", "options": ["Just looking, thanks.", "Just cooking, thanks.", "Just booking, thanks."]}},
+    {"id": "a15", "topic": "shop", "emoji": "💸", "word": "pricey", "zh": "有点贵", "fact": "想委婉地说“有点贵”，用 It's a bit pricey，比 too expensive 听起来柔和。", "quiz": {"type": "choice", "q": "It's a bit pricey 是什么意思？", "options": ["有点贵", "有点便宜", "有点难看"]}}
+  ]
+}

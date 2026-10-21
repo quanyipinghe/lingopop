@@ -1,0 +1,11 @@
+{
+  "topics": [
+    {"id": "work", "emoji": "💼", "name": "职场", "kind": "talk"}
+  ],
+  "cards": [
+    {"id": "a06", "topic": "work", "emoji": "📎", "word": "attached", "zh": "附件", "fact": "邮件里提附件，常用 Please find attached... 或者更随意的 I've attached...", "quiz": {"type": "choice", "q": "邮件里说“附件是报告”，哪句最自然？", "options": ["I've attached the report.", "The report is in the attachment inside.", "Please see the report attach."]}},
+    {"id": "a09", "topic": "work", "emoji": "⏰", "word": "deadline", "zh": "截止日期", "fact": "deadline 最早指美国内战战俘营里的一条线，越过就会被射杀。难怪截止日期让人这么紧张。", "quiz": {"type": "choice", "q": "deadline 最初指什么？", "options": ["战俘营里不能越过的线", "报纸印刷的最后时间", "死者名单"]}},
+    {"id": "a10", "topic": "work", "emoji": "🤔", "word": "get back to you", "zh": "回头答复你", "fact": "一时答不上来，不用硬说 Let me think think。一句 I'll get back to you 既礼貌又专业。", "quiz": {"type": "choice", "q": "I'll get back to you 的意思是？", "options": ["我回头答复你", "我回去找你", "我会退还给你"]}},
+    {"id": "a13", "topic": "work", "emoji": "☎️", "word": "who's calling", "zh": "请问是哪位", "fact": "接电话想问对方是谁，别说 Who are you?，那样听起来挺冲的。要说 Who's calling, please? 或者 May I ask who's calling?", "quiz": {"type": "choice", "q": "接电话时礼貌地问“您是哪位”？", "options": ["May I ask who's calling?", "Who are you?", "What's your name, you?"]}}
+  ]
+}

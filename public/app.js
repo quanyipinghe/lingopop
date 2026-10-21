@@ -1,10 +1,17 @@
-import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress } from './logic.js';
+import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress, migrate } from './logic.js';
 
-const AUDIENCES = {
-  kids: { name: '小朋友', emoji: '🧒', desc: '动物、颜色、身边的小东西' },
-  students: { name: '学生', emoji: '🎒', desc: '词根词缀，单词原来是拼出来的' },
-  adults: { name: '大人', emoji: '💼', desc: '职场、旅行，告别中式英语' },
+// Levels follow the Cambridge English path (CEFR); content lives in data/<id>.json.
+const LEVELS = {
+  L0: { name: '启蒙', emoji: '🐣', age: '3–4 岁', desc: '看图听音，认识身边的东西' },
+  L1: { name: 'Starters', emoji: '🌱', age: '5–6 岁', desc: '剑桥少儿一级: 字母、拼读和第一句英语' },
+  L2: { name: 'Movers', emoji: '🚲', age: '小学低年级', desc: '剑桥少儿二级: 学校、天气、日常动作' },
+  L3: { name: 'Flyers', emoji: '🪁', age: '小学高年级', desc: '剑桥少儿三级: 单词背后的故事' },
+  L4: { name: 'KET', emoji: '🗺️', age: '初一', desc: 'A2: 购物问路，说完整的句子' },
+  L5: { name: 'PET', emoji: '🎒', age: '初中', desc: 'B1: 词根词缀与旅行场景' },
+  L6: { name: 'FCE', emoji: '🎓', age: '高中', desc: 'B2: 习语和地道搭配' },
+  L7: { name: 'CAE', emoji: '💼', age: '大学', desc: 'C1: 学术与职场英语' },
 };
+const LV_IDS = Object.keys(LEVELS);
 
 const store = {
   get(k, d) {
@@ -33,18 +40,24 @@ function push() {
   pushTimer = setTimeout(() => api({ method: 'PUT', body: JSON.stringify(snapshot()) }).catch(() => {}), 2000);
 }
 
+// Replace this browser's progress with p, keeping the login.
+function save(p) {
+  Object.keys(snapshot()).forEach((k) => localStorage.removeItem('lp:' + k));
+  for (const [k, v] of Object.entries(p)) localStorage.setItem('lp:' + k, JSON.stringify(v));
+}
+
 async function pull() {
+  let p = snapshot();
+  let synced = false;
   if (pw()) {
     try {
       const r = await api();
       if (r.status === 401) { forget(); return showAccount('用户名或密码不对'); }
-      if (r.ok) {
-        const merged = mergeProgress(snapshot(), await r.json());
-        for (const [k, v] of Object.entries(merged)) localStorage.setItem('lp:' + k, JSON.stringify(v));
-        push();
-      }
+      if (r.ok) { p = mergeProgress(p, await r.json()); synced = true; }
     } catch { /* offline: keep local */ }
   }
+  save(migrate(p));
+  if (synced) push();
   showHome();
 }
 
@@ -89,7 +102,10 @@ async function showAccount(msg = '', signup = false) {
 
 const main = document.querySelector('main');
 const $ = (sel) => main.querySelector(sel);
-let aud, cards;
+let lv, data;
+const cache = {};
+const load = async (id) => (cache[id] ??= await (await fetch(`data/${id}.json`)).json());
+const gotAll = () => store.get('got:all', []);
 
 // Pre-generated Kokoro clip; browser voice only if the clip is missing.
 const player = new Audio();
@@ -124,58 +140,93 @@ const bindSay = (c) => {
 
 function showPicker() {
   main.innerHTML = `
-    <h2 class="center">你是哪一位？</h2>
-    <div class="pick">${Object.entries(AUDIENCES).map(([k, a]) => `
-      <button class="tile" data-aud="${k}">
-        <span class="big" aria-hidden="true">${a.emoji}</span><b>${a.name}</b><small>${a.desc}</small>
+    <h2 class="center">从哪一级开始？</h2>
+    <p class="zh">按年龄选就好，以后随时能换</p>
+    <div class="pick">${Object.entries(LEVELS).map(([k, a]) => `
+      <button class="tile" data-lv="${k}">
+        <span class="big" aria-hidden="true">${a.emoji}</span><b>${a.name} · ${a.age}</b><small>${a.desc}</small>
       </button>`).join('')}
     </div>`;
-  main.querySelectorAll('[data-aud]').forEach((b) => {
-    b.onclick = () => { store.set('aud', b.dataset.aud); showHome(); };
+  main.querySelectorAll('[data-lv]').forEach((b) => {
+    b.onclick = () => { store.set('lv', b.dataset.lv); showHome(); };
   });
 }
 
 async function showHome() {
-  aud = store.get('aud');
-  if (!AUDIENCES[aud]) return showPicker();
+  lv = store.get('lv');
+  if (!LEVELS[lv]) return showPicker();
   try {
-    cards = await (await fetch(`data/${aud}.json`)).json();
+    data = await load(lv);
   } catch {
     main.innerHTML = '<p class="center">内容加载失败，请刷新再试。</p>';
     return;
   }
-  const got = store.get('got:' + aud, []);
+  const got = gotAll();
+  const done = (list) => list.filter((c) => got.includes(c.id)).length;
   const s = store.get('streak', { last: '', count: 0 });
-  const a = AUDIENCES[aud];
+  const a = LEVELS[lv];
+  const next = LV_IDS[LV_IDS.indexOf(lv) + 1];
+  const ready = next && data.cards.length && done(data.cards) >= data.cards.length * 0.8;
   main.innerHTML = `
+    <nav class="levels" aria-label="等级">${LV_IDS.map((k) => `<button class="chip${k === lv ? ' on' : ''}" data-lv="${k}"
+      ${k === lv ? 'aria-current="true"' : ''}>${LEVELS[k].emoji} ${LEVELS[k].name}</button>`).join('')}</nav>
     <section class="hello">
-      <p>${a.emoji} ${a.name}模式 · <button class="link" id="switch">换一个</button>
+      <p>${a.emoji} <b>${a.name}</b> · ${a.age}
       · <button class="link" id="sync">${pw() ? `☁️ ${localStorage.getItem('lp:user').replace(/</g, '&lt;')} · 退出` : '☁️ 登录 / 注册'}</button></p>
+      <p class="zh">${a.desc}</p>
       <div class="stats">
         <div><b>${displayStreak(s)}</b>天连续打卡</div>
-        <div><b>${got.length}/${cards.length}</b>已发现</div>
+        <div><b>${done(data.cards)}/${data.cards.length}</b>本级已发现</div>
       </div>
-      <button class="big-btn" id="go">${s.last === today() ? '再碰一组 ✨' : '开始今日一碰 🎈'}</button>
+      ${ready ? `<button class="link up" id="up">🎉 这一级快学完啦，升到 ${LEVELS[next].emoji} ${LEVELS[next].name} →</button>` : ''}
+      ${data.cards.length
+        ? `<button class="big-btn" id="go">${s.last === today() ? '再碰一组 ✨' : '开始今日一碰 🎈'}</button>`
+        : '<p class="center">这一级的内容还在准备中～</p>'}
     </section>
-    <h3>收集墙</h3>
-    <div class="wall">${cards.map((c) => got.includes(c.id)
+    ${data.topics.length ? '<h3>选个场景</h3>' : ''}
+    <div class="topics">${data.topics.map((t) => {
+      const list = data.cards.filter((c) => c.topic === t.id);
+      return `<button class="topic" data-t="${t.id}"><span class="big" aria-hidden="true">${t.emoji}</span>
+        <b>${t.name}</b><small>${t.kind === 'talk' ? '💬 对话 · ' : ''}${done(list)}/${list.length}</small></button>`;
+    }).join('')}</div>`;
+  main.querySelectorAll('.chip').forEach((b) => {
+    b.onclick = () => { store.set('lv', b.dataset.lv); showHome(); };
+  });
+  $('#sync').onclick = () => (pw() ? logout() : showAccount());
+  if (ready) $('#up').onclick = () => { store.set('lv', next); showHome(); };
+  if (data.cards.length) $('#go').onclick = () => play(pickDaily(data.cards, got), showHome);
+  main.querySelectorAll('.topic').forEach((b) => {
+    b.onclick = () => showTopic(data.topics.find((t) => t.id === b.dataset.t));
+  });
+}
+
+function showTopic(t) {
+  const list = data.cards.filter((c) => c.topic === t.id);
+  const got = gotAll();
+  const back = () => showTopic(t);
+  main.innerHTML = `
+    <h2 class="center">${t.emoji} ${t.name}</h2>
+    <button class="big-btn" id="go">碰一组 ✨</button>
+    <h3>收集墙 ${list.filter((c) => got.includes(c.id)).length}/${list.length}</h3>
+    <div class="wall">${list.map((c) => got.includes(c.id)
       ? `<button class="cell on" data-id="${c.id}" aria-label="${c.word}">${c.emoji}</button>`
       : '<span class="cell" aria-label="未发现">?</span>').join('')}
-    </div>`;
-  $('#switch').onclick = showPicker;
-  $('#sync').onclick = () => (pw() ? logout() : showAccount());
-  $('#go').onclick = () => play(pickDaily(cards, got));
+    </div>
+    <button class="big-btn" id="home">← 回到首页</button>`;
+  $('#go').onclick = () => play(pickDaily(list, got), back);
+  $('#home').onclick = showHome;
   main.querySelectorAll('.cell.on').forEach((b) => {
     b.onclick = () => {
-      const c = cards.find((x) => x.id === b.dataset.id);
+      const c = list.find((x) => x.id === b.dataset.id);
       main.innerHTML = cardHTML(c) + '<button class="big-btn" id="back">← 回到收集墙</button>';
       bindSay(c);
-      $('#back').onclick = showHome;
+      speak(c.word);
+      $('#back').onclick = back;
     };
   });
 }
 
-function play(list) {
+function play(list, back) {
   let i = 0;
   let newCount = 0;
 
@@ -187,8 +238,8 @@ function play(list) {
     bindSay(c);
     speak(c.word);
     $('#quiz').onclick = () => quiz(c, (ok, answer) => {
-      const got = store.get('got:' + aud, []);
-      if (!got.includes(c.id)) { got.push(c.id); store.set('got:' + aud, got); newCount++; }
+      const got = gotAll();
+      if (!got.includes(c.id)) { got.push(c.id); store.set('got:all', got); newCount++; }
       $('#fb').innerHTML = `
         <p class="${ok ? 'ok' : 'no'}">${ok ? '🎉 答对啦！' : `差一点！答案是 <b lang="en">${answer}</b>`}</p>
         <button class="big-btn" id="next">${i + 1 < list.length ? '下一张 →' : '完成 🎊'}</button>`;
@@ -205,8 +256,8 @@ function play(list) {
         <h2>今日一碰完成！</h2>
         <p>${newCount ? `新点亮了 <b>${newCount}</b> 个发现` : '复习了一轮老朋友'}，明天见～</p>
       </div>
-      <button class="big-btn" id="home">回到首页</button>`;
-    $('#home').onclick = showHome;
+      <button class="big-btn" id="home">返回</button>`;
+    $('#home').onclick = back;
   };
 
   step();
@@ -248,17 +299,20 @@ function quiz(c, done) {
     return;
   }
 
-  // choice / listen: options[0] is the correct one
+  // choice / listen / picture: options[0] is the correct one
   const answer = q.options[0];
   const listen = q.type === 'listen';
+  const pic = q.type === 'picture'; // hear the word, tap the emoji: works before kids can read
+  const sayText = pic ? c.word : listen ? answer : null;
+  const ask = '<button class="say" aria-label="再听一遍">🔊</button>';
   main.innerHTML = `
     <div class="card">
-      <p class="q">${listen ? '听一听，选出你听到的 <button class="say" aria-label="再听一遍">🔊</button>' : q.q}</p>
-      <div class="opts">${shuffle(q.options).map((o) =>
-        `<button class="opt" ${listen || /^[\x00-\x7F]+$/.test(o) ? 'lang="en"' : ''}>${o}</button>`).join('')}</div>
+      <p class="q">${pic ? `听一听，点出对的图 ${ask}` : listen ? `听一听，选出你听到的 ${ask}` : q.q}</p>
+      <div class="opts${pic ? ' pics' : ''}">${shuffle(q.options).map((o) =>
+        `<button class="opt" ${listen || (!pic && /^[\x00-\x7F]+$/.test(o)) ? 'lang="en"' : ''}>${o}</button>`).join('')}</div>
     </div>
     <div id="fb"></div>`;
-  if (listen) { $('.say').onclick = () => speak(answer); speak(answer); }
+  if (sayText) { $('.say').onclick = () => speak(sayText); speak(sayText); }
   main.querySelectorAll('.opt').forEach((b) => {
     b.onclick = () => {
       main.querySelectorAll('.opt').forEach((x) => {
@@ -266,7 +320,7 @@ function quiz(c, done) {
         if (x.textContent === answer) x.classList.add('right');
       });
       if (b.textContent !== answer) b.classList.add('wrong');
-      done(b.textContent === answer, answer);
+      done(b.textContent === answer, pic ? `${answer} ${c.word}` : answer);
     };
   });
 }

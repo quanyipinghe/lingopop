@@ -29,10 +29,25 @@ export function shuffle(arr) {
   return a;
 }
 
-// New cards first, in file order; once everything is collected, a random review set.
-export function pickDaily(cards, collected, n = 5) {
-  const fresh = cards.filter((c) => !collected.includes(c.id));
-  return fresh.length ? fresh.slice(0, n) : shuffle(cards).slice(0, n);
+// New cards first, in file order, with one already-seen card mixed in for review
+// once there are 5 to pick from; once everything is collected, a random review set.
+export function pickDaily(cards, got, n = 5) {
+  const fresh = cards.filter((c) => !got.includes(c.id));
+  if (!fresh.length) return shuffle(cards).slice(0, n);
+  const seen = cards.filter((c) => got.includes(c.id));
+  if (seen.length < 5) return fresh.slice(0, n);
+  return [...fresh.slice(0, n - 1), shuffle(seen)[0]];
+}
+
+// Old progress had one card list per audience; now there is one list and a level.
+const OLD_AUD = { kids: 'L0', students: 'L3', adults: 'L5' };
+export function migrate(p) {
+  const out = { ...p };
+  const old = Object.keys(out).filter((k) => k.startsWith('got:') && k !== 'got:all');
+  if (old.length) out['got:all'] = [...new Set([...(out['got:all'] ?? []), ...old.flatMap((k) => out[k])])];
+  old.forEach((k) => delete out[k]);
+  if (out.aud) { out.lv ??= OLD_AUD[out.aud]; delete out.aud; }
+  return out;
 }
 
 // Shared by the browser and scripts/tts.mjs: "Check, please." -> "check-please.mp3"
@@ -56,7 +71,7 @@ export const linkEnglish = (s) =>
   });
 
 // Combine local and cloud progress so neither side loses anything.
-// Shape: { aud: 'kids', streak: {last, count}, 'got:kids': ['k1', ...], ... }
+// Shape: { lv: 'L0', streak: {last, count}, 'got:all': ['k01', ...] }
 export function mergeProgress(local, remote) {
   const out = { ...local, ...remote };
   for (const k of Object.keys(out)) {

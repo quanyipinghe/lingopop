@@ -1,0 +1,31 @@
+{
+  "topics": [
+    {"id": "animals", "emoji": "🐾", "name": "动物", "kind": "words"},
+    {"id": "food", "emoji": "🍎", "name": "好吃的", "kind": "words"},
+    {"id": "nature", "emoji": "🌈", "name": "天空与自然", "kind": "words"},
+    {"id": "days", "emoji": "📅", "name": "星期", "kind": "words"},
+    {"id": "body", "emoji": "👍", "name": "身体", "kind": "words"}
+  ],
+  "cards": [
+    {"id": "k01", "topic": "animals", "emoji": "🐘", "word": "elephant", "zh": "大象", "fact": "elephant 里藏着 ant（蚂蚁）！最大的动物，名字里住着最小的小虫子。", "quiz": {"type": "spell"}},
+    {"id": "k02", "topic": "animals", "emoji": "🦋", "word": "butterfly", "zh": "蝴蝶", "fact": "butterfly 是 butter（黄油）+ fly（飞虫）拼起来的，像一只会飞的黄油块。", "quiz": {"type": "choice", "q": "butterfly 是哪两个词拼起来的？", "options": ["butter + fly", "bat + fly", "bus + fly"]}},
+    {"id": "k03", "topic": "animals", "emoji": "🐙", "word": "octopus", "zh": "章鱼", "fact": "octo 的意思是“八”，所以 octopus 就是“八只脚”。", "quiz": {"type": "choice", "q": "章鱼有几条腿？", "options": ["8 条", "6 条", "10 条"]}},
+    {"id": "k06", "topic": "animals", "emoji": "🐱", "word": "kitten", "zh": "小猫咪", "fact": "大猫是 cat，小猫有自己的名字 kitten；小狗也有，叫 puppy。", "quiz": {"type": "choice", "q": "“小狗”用英语怎么说？", "options": ["puppy", "kitten", "cub"]}},
+    {"id": "k08", "topic": "animals", "emoji": "🦒", "word": "giraffe", "zh": "长颈鹿", "fact": "长颈鹿的舌头是深紫色的，差不多有你的胳膊那么长！", "quiz": {"type": "listen", "options": ["giraffe", "gorilla", "goldfish"]}},
+    {"id": "k10", "topic": "animals", "emoji": "🐝", "word": "bee", "zh": "蜜蜂", "fact": "英语说一个人很忙，会说 busy as a bee——像小蜜蜂一样忙。", "quiz": {"type": "choice", "q": "busy as a bee 是什么意思？", "options": ["非常忙", "非常甜", "非常小"]}},
+    {"id": "k13", "topic": "animals", "emoji": "🐧", "word": "penguin", "zh": "企鹅", "fact": "企鹅是鸟，却不会飞——但它们在水里“飞”得超快！", "quiz": {"type": "choice", "q": "Penguins can ___.", "options": ["swim", "fly"]}},
+    {"id": "k15", "topic": "animals", "emoji": "🐶", "word": "woof", "zh": "汪汪", "fact": "英语里小狗叫 woof，小猫叫 meow，青蛙叫 ribbit，奶牛叫 moo。", "quiz": {"type": "choice", "q": "英语里青蛙怎么叫？", "options": ["ribbit", "woof", "moo"]}},
+    {"id": "k19", "topic": "animals", "emoji": "🐭", "word": "mouse", "zh": "老鼠", "fact": "一只 mouse，两只可不是 mouses，而是 mice！", "quiz": {"type": "choice", "q": "两只老鼠是 two ___.", "options": ["mice", "mouses", "mouse"]}},
+    {"id": "k20", "topic": "animals", "emoji": "🐟", "word": "fish", "zh": "鱼", "fact": "一条 fish，一百条还是 fish！它的复数长得和单数一样。", "quiz": {"type": "choice", "q": "三条鱼是 three ___.", "options": ["fish", "fishs", "fishes"]}},
+    {"id": "k05", "topic": "food", "emoji": "🍍", "word": "pineapple", "zh": "菠萝", "fact": "pine 是松树。菠萝长得像个大松果，所以叫 pine + apple。", "quiz": {"type": "choice", "q": "pineapple 里的 pine 是什么？", "options": ["松树", "苹果", "香蕉"]}},
+    {"id": "k09", "topic": "food", "emoji": "🍌", "word": "banana", "zh": "香蕉", "fact": "在植物学家眼里，香蕉是“浆果”（berry），草莓反而不是！", "quiz": {"type": "choice", "q": "按植物学家的说法，哪个是浆果？", "options": ["香蕉", "草莓"]}},
+    {"id": "k14", "topic": "food", "emoji": "🍉", "word": "watermelon", "zh": "西瓜", "fact": "water（水）+ melon（瓜）= 水瓜。西瓜九成以上都是水。", "quiz": {"type": "choice", "q": "watermelon 里的 water 是什么？", "options": ["水", "西", "红"]}},
+    {"id": "k18", "topic": "food", "emoji": "🍎", "word": "apple", "zh": "苹果", "fact": "英语老话说：An apple a day keeps the doctor away。", "quiz": {"type": "choice", "q": "An apple a day keeps the doctor away 是什么意思？", "options": ["每天一个苹果，医生远离我", "每天给医生一个苹果", "医生每天都吃苹果"]}},
+    {"id": "k04", "topic": "nature", "emoji": "🌈", "word": "rainbow", "zh": "彩虹", "fact": "rain 是雨，bow 是弓。下完雨，天上挂起一把彩色的弓！", "quiz": {"type": "listen", "options": ["rainbow", "raincoat", "railway"]}},
+    {"id": "k07", "topic": "nature", "emoji": "🌻", "word": "sunflower", "zh": "向日葵", "fact": "sun（太阳）+ flower（花）= 太阳花。它小时候会跟着太阳转头哦。", "quiz": {"type": "spell"}},
+    {"id": "k17", "topic": "nature", "emoji": "⭐", "word": "star", "zh": "星星", "fact": "Twinkle, twinkle, little star——这首儿歌和 ABC 字母歌是同一个调子！", "quiz": {"type": "listen", "options": ["star", "stair", "car"]}},
+    {"id": "k11", "topic": "days", "emoji": "🌙", "word": "Monday", "zh": "星期一", "fact": "Monday 就是 Moon day——月亮的日子。", "quiz": {"type": "choice", "q": "Monday 名字里藏着什么？", "options": ["月亮 Moon", "钱 Money", "早上 Morning"]}},
+    {"id": "k12", "topic": "days", "emoji": "☀️", "word": "Sunday", "zh": "星期天", "fact": "Sunday 就是 Sun day——太阳的日子，难怪星期天心情最晴朗。", "quiz": {"type": "spell"}},
+    {"id": "k16", "topic": "body", "emoji": "👍", "word": "thumb", "zh": "大拇指", "fact": "thumb 最后的 b 是个害羞的字母，写出来但不发音。", "quiz": {"type": "spell"}}
+  ]
+}

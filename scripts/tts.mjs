@@ -12,7 +12,7 @@ const DATA = new URL('../public/data/', import.meta.url).pathname;
 
 const wanted = new Map(); // file -> text
 for (const f of readdirSync(DATA).filter((f) => f.endsWith('.json'))) {
-  for (const t of audioTexts(JSON.parse(readFileSync(join(DATA, f), 'utf8')))) wanted.set(audioFile(t), t);
+  for (const t of audioTexts(JSON.parse(readFileSync(join(DATA, f), "utf8")).cards)) wanted.set(audioFile(t), t);
 }
 
 let removed = 0;
