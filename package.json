@@ -1,0 +1,12 @@
+{
+  "name": "lingopop",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "tts": "node scripts/tts.mjs",
+    "test": "node test.mjs"
+  },
+  "devDependencies": {
+    "kokoro-js": "^1.2.1"
+  }
+}

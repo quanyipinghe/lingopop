@@ -1,0 +1,22 @@
+[
+  {"id":"s01","emoji":"📞","word":"telephone","zh":"电话","fact":"tele = 远，phone = 声音。telephone 就是“远方的声音”，television 就是“远方的画面”。","quiz":{"type":"choice","q":"telescope 里的 tele 是什么意思？","options":["远","电","小"]}},
+  {"id":"s02","emoji":"🚲","word":"bicycle","zh":"自行车","fact":"bi = 二，cycle = 轮。所以 bicycle 是两个轮子，tricycle 是三个轮子。","quiz":{"type":"choice","q":"tricycle 有几个轮子？","options":["3 个","2 个","4 个"]}},
+  {"id":"s03","emoji":"🌍","word":"geography","zh":"地理","fact":"geo = 地球、土地，graph = 写、画。geography 就是“描绘大地”。","quiz":{"type":"choice","q":"geology 研究的是什么？","options":["地质","几何","基因"]}},
+  {"id":"s04","emoji":"🚫","word":"impossible","zh":"不可能的","fact":"否定前缀 in- 碰到 p、b、m 开头的词会变成 im-，因为这样读起来更顺：impossible、imbalance、immature。","quiz":{"type":"choice","q":"possible 的反义词是？","options":["impossible","inpossible","unpossible"]}},
+  {"id":"s05","emoji":"🌐","word":"internet","zh":"互联网","fact":"inter = 在……之间。internet 就是“网与网之间”，international 就是“国与国之间”。","quiz":{"type":"choice","q":"interview 字面上是什么意思？","options":["互相看","往里看","重新看"]}},
+  {"id":"s06","emoji":"✋","word":"manufacture","zh":"制造","fact":"manu = 手，fact = 做。manufacture 原本就是“手工做”，manual 是“用手的”。","quiz":{"type":"choice","q":"manual 里的 manu 指什么？","options":["手","人","多"]}},
+  {"id":"s07","emoji":"🔮","word":"predict","zh":"预言","fact":"pre = 提前，dict = 说。predict 就是“提前说出来”；dictionary 就是“收集说法的书”。","quiz":{"type":"choice","q":"dictate（听写）里的 dict 是什么意思？","options":["说","写","看"]}},
+  {"id":"s08","emoji":"🚢","word":"transport","zh":"运输","fact":"trans = 跨越，port = 搬运。transport 就是把东西“搬过去”，所以港口叫 port。","quiz":{"type":"choice","q":"export（出口）里的 ex 是什么意思？","options":["向外","向内","向上"]}},
+  {"id":"s09","emoji":"🧬","word":"biology","zh":"生物学","fact":"bio = 生命，logy = 学科。biology 是研究生命的学问，ecology 是研究环境的学问。","quiz":{"type":"listen","options":["biology","geology","psychology"]}},
+  {"id":"s10","emoji":"💯","word":"century","zh":"世纪","fact":"cent = 一百。century 是一百年，centimeter 是一米的百分之一，percent 是“每一百”。","quiz":{"type":"choice","q":"a century 是多少年？","options":["100 年","1000 年","10 年"]}},
+  {"id":"s11","emoji":"📅","word":"December","zh":"十二月","fact":"decem 在拉丁语里是“十”。古罗马的历法从三月开始，December 原本是第十个月！","quiz":{"type":"choice","q":"October 里的 octo 是什么意思？","options":["八","十","六"]}},
+  {"id":"s12","emoji":"🥐","word":"breakfast","zh":"早餐","fact":"break = 打破，fast = 禁食。睡了一整夜没吃东西，早餐就是“打破禁食”的那一顿。","quiz":{"type":"spell"}},
+  {"id":"s13","emoji":"🍞","word":"companion","zh":"伙伴","fact":"com = 一起，pan = 面包。companion 最初的意思是“一起吃面包的人”。","quiz":{"type":"choice","q":"companion 最早的意思是？","options":["一起吃面包的人","一起走路的人","一起上学的人"]}},
+  {"id":"s14","emoji":"🎧","word":"audio","zh":"音频","fact":"aud = 听。audio 是声音，audience 是听众，audition 是“听一听你唱得怎么样”的试音。","quiz":{"type":"choice","q":"audience 是什么人？","options":["听众","演员","作者"]}},
+  {"id":"s15","emoji":"👀","word":"vision","zh":"视力","fact":"vis = 看。vision 是视力，visible 是看得见的，visit 是“去看看”。","quiz":{"type":"choice","q":"invisible 是什么意思？","options":["看不见的","听不见的","摸不着的"]}},
+  {"id":"s16","emoji":"👋","word":"goodbye","zh":"再见","fact":"goodbye 是 God be with ye（愿上帝与你同在）一路缩出来的。","quiz":{"type":"choice","q":"goodbye 最初是哪句话的缩写？","options":["God be with ye","Good boy","Go buy"]}},
+  {"id":"s17","emoji":"🤪","word":"silly","zh":"傻傻的","fact":"silly 在古英语里的意思是“有福气的”，后来慢慢变成“天真”，最后才变成“傻”。","quiz":{"type":"choice","q":"silly 最早的意思是？","options":["有福气的","生气的","聪明的"]}},
+  {"id":"s18","emoji":"💼","word":"employee","zh":"雇员","fact":"-er 是做事的人，-ee 是被做事的人：employer 是雇主，employee 是被雇的人。","quiz":{"type":"choice","q":"interviewee 是谁？","options":["被面试的人","面试官","记者"]}},
+  {"id":"s19","emoji":"😌","word":"careless","zh":"粗心的","fact":"-ful 是“充满”，-less 是“没有”。careful 是小心，careless 是粗心。","quiz":{"type":"choice","q":"homeless 是什么意思？","options":["无家可归的","想家的","在家的"]}},
+  {"id":"s20","emoji":"🔁","word":"recycle","zh":"回收利用","fact":"re = 再一次，cycle = 循环。recycle 就是“再循环一次”。","quiz":{"type":"spell"}}
+]
