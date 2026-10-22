@@ -132,3 +132,13 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .account input { display: block; width: 100%; margin-top: 6px; padding: 12px; font: inherit; border: 3px solid var(--ink); border-radius: 12px; }
 .account .no { text-align: center; min-height: 1.2em; margin: 0; }
 .account .link { display: block; margin: 0 auto; }
+
+/* Short screens (a TV WebView is often 960x540 or less): drop the tagline and footer and
+   tighten spacing, so a card's picture and its button fit on one screen. */
+@media (max-height: 600px) {
+  body { padding-top: 6px; }
+  header { margin: 0 0 6px; }
+  .logo { font-size: 1.5rem; }
+  .tagline, footer { display: none; }
+  .dots { margin-bottom: 6px; }
+}
