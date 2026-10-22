@@ -42,7 +42,7 @@
     {"id": "L2-033", "topic": "health", "emoji": "🤢", "word": "I feel sick.", "zh": "我不舒服。", "fact": "sick 是生病。在英国，I feel sick 常常是说“我想吐”。", "quiz": {"type": "choice", "q": "I feel sick 可能是什么意思？", "options": ["我不舒服，想吐", "我感觉很酷", "我很想念你"]}},
     {"id": "L2-034", "topic": "actions", "emoji": "🚴", "word": "ride", "zh": "骑", "fact": "骑自行车、骑马都用 ride：ride a bike，ride a horse。", "quiz": {"type": "choice", "q": "“骑马”怎么说？", "options": ["ride a horse", "drive a horse", "sit a horse"]}},
     {"id": "L2-035", "topic": "actions", "emoji": "🤾", "word": "throw", "zh": "扔", "fact": "throw 是扔，catch 是接，玩球的时候总是一起出现。", "quiz": {"type": "listen", "options": ["throw", "through", "three"]}},
-    {"id": "L2-036", "topic": "actions", "emoji": "🫴", "word": "catch", "zh": "接住", "fact": "catch 是接住，也是抓住：catch a fish。catch a cold 是“得感冒”。", "quiz": {"type": "choice", "q": "catch a cold 是什么意思？", "options": ["得感冒", "抓住冷风", "接住冰块"]}},
+    {"id": "L2-036", "topic": "actions", "emoji": "🤲", "word": "catch", "zh": "接住", "fact": "catch 是接住，也是抓住：catch a fish。catch a cold 是“得感冒”。", "quiz": {"type": "choice", "q": "catch a cold 是什么意思？", "options": ["得感冒", "抓住冷风", "接住冰块"]}},
     {"id": "L2-037", "topic": "actions", "emoji": "🦘", "word": "jump", "zh": "跳", "fact": "跳绳美国人叫 jump rope，英国人叫 skipping。", "quiz": {"type": "spell"}},
     {"id": "L2-038", "topic": "actions", "emoji": "🕊️", "word": "fly", "zh": "飞", "fact": "fly 是飞，也是苍蝇！Time flies 意思是“时间过得真快”。", "quiz": {"type": "choice", "q": "Time flies 是什么意思？", "options": ["时间过得真快", "时间会飞", "苍蝇很准时"]}},
     {"id": "L2-039", "topic": "actions", "emoji": "📢", "word": "shout", "zh": "大喊", "fact": "shout 是大声喊，whisper 是小声说悄悄话。", "quiz": {"type": "listen", "options": ["shout", "shoot", "short"]}},

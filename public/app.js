@@ -5,7 +5,7 @@ const LEVELS = {
   L0: { name: '启蒙', emoji: '🐣', age: '3–4 岁', desc: '看图听音，认识身边的东西' },
   L1: { name: 'Starters', emoji: '🌱', age: '5–6 岁', desc: '剑桥少儿一级: 字母、拼读和第一句英语' },
   L2: { name: 'Movers', emoji: '🚲', age: '小学低年级', desc: '剑桥少儿二级: 学校、天气、日常动作' },
-  L3: { name: 'Flyers', emoji: '🪁', age: '小学高年级', desc: '剑桥少儿三级: 单词背后的故事' },
+  L3: { name: 'Flyers', emoji: '🎏', age: '小学高年级', desc: '剑桥少儿三级: 单词背后的故事' },
   L4: { name: 'KET', emoji: '🗺️', age: '初一', desc: 'A2: 购物问路，说完整的句子' },
   L5: { name: 'PET', emoji: '🎒', age: '初中', desc: 'B1: 词根词缀与旅行场景' },
   L6: { name: 'FCE', emoji: '🎓', age: '高中', desc: 'B2: 习语和地道搭配' },
