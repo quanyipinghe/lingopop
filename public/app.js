@@ -116,6 +116,30 @@ function speak(text) {
   player.play().catch(() => {}); // missing file is handled by onerror; autoplay blocks are fine to ignore
 }
 
+// Tiny synthesized cues so kids who can't read still know right from wrong. No audio files needed.
+let actx;
+function beep(kind) {
+  try {
+    actx ??= new (window.AudioContext || window.webkitAudioContext)();
+    const notes = { ok: [660, 990], no: [240, 190], pop: [880] }[kind];
+    notes.forEach((f, k) => {
+      const t = actx.currentTime + k * 0.12;
+      const o = actx.createOscillator();
+      const g = actx.createGain();
+      o.type = kind === 'no' ? 'triangle' : 'sine';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.2, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+      o.connect(g).connect(actx.destination);
+      o.start(t);
+      o.stop(t + 0.22);
+    });
+  } catch { /* no Web Audio: stay silent */ }
+}
+
+// Cards collected this session, so the wall can stamp them in once.
+const fresh = new Set();
+
 function robotSpeak(text) {
   if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
@@ -127,14 +151,14 @@ function robotSpeak(text) {
 
 const cardHTML = (c) => `
   <article class="card">
-    <div class="emoji" aria-hidden="true">${c.emoji}</div>
+    <button class="emoji" aria-label="朗读 ${c.word}">${c.emoji}</button>
     <h2 lang="en">${c.word} <button class="say" aria-label="朗读 ${c.word}">🔊</button></h2>
     <p class="zh">${c.zh}</p>
     <p class="fact"><b>原来如此：</b>${linkEnglish(c.fact)}</p>
   </article>`;
 
 const bindSay = (c) => {
-  $('.say').onclick = () => speak(c.word);
+  main.querySelectorAll('.card .say, .card .emoji').forEach((b) => { b.onclick = () => speak(c.word); });
   main.querySelectorAll('.en').forEach((b) => { b.onclick = () => speak(b.dataset.say); });
 };
 
@@ -167,15 +191,13 @@ async function showHome() {
   const a = LEVELS[lv];
   const next = LV_IDS[LV_IDS.indexOf(lv) + 1];
   const ready = next && data.cards.length && done(data.cards) >= data.cards.length * 0.8;
+  const streak = displayStreak(s);
   main.innerHTML = `
-    <nav class="levels" aria-label="等级">${LV_IDS.map((k) => `<button class="chip${k === lv ? ' on' : ''}" data-lv="${k}"
-      ${k === lv ? 'aria-current="true"' : ''}>${LEVELS[k].emoji} ${LEVELS[k].name}</button>`).join('')}</nav>
     <section class="hello">
-      <p>${a.emoji} <b>${a.name}</b> · ${a.age}
-      · <button class="link" id="sync">${pw() ? `☁️ ${localStorage.getItem('lp:user').replace(/</g, '&lt;')} · 退出` : '☁️ 登录 / 注册'}</button></p>
+      <p>${a.emoji} <b>${a.name}</b> · ${a.age}</p>
       <p class="zh">${a.desc}</p>
       <div class="stats">
-        <div><b>${displayStreak(s)}</b>天连续打卡</div>
+        <div>${streak ? `<b>🔥 ${streak}</b>天连续打卡` : '<b>👋</b>今天来碰第一下吧'}</div>
         <div><b>${done(data.cards)}/${data.cards.length}</b>本级已发现</div>
       </div>
       ${ready ? `<button class="link up" id="up">🎉 这一级快学完啦，升到 ${LEVELS[next].emoji} ${LEVELS[next].name} →</button>` : ''}
@@ -188,13 +210,20 @@ async function showHome() {
       const list = data.cards.filter((c) => c.topic === t.id);
       return `<button class="topic" data-t="${t.id}"><span class="big" aria-hidden="true">${t.emoji}</span>
         <b>${t.name}</b><small>${t.kind === 'talk' ? '💬 对话 · ' : ''}${done(list)}/${list.length}</small></button>`;
-    }).join('')}</div>`;
+    }).join('')}</div>
+    <details class="parent">
+      <summary>🔧 家长设置</summary>
+      <p>换等级</p>
+      <nav class="levels" aria-label="等级">${LV_IDS.map((k) => `<button class="chip${k === lv ? ' on' : ''}" data-lv="${k}"
+        ${k === lv ? 'aria-current="true"' : ''}>${LEVELS[k].emoji} ${LEVELS[k].name}</button>`).join('')}</nav>
+      <button class="link" id="sync">${pw() ? `☁️ ${localStorage.getItem('lp:user').replace(/</g, '&lt;')} · 退出` : '☁️ 登录 / 注册，换设备进度不丢'}</button>
+    </details>`;
   main.querySelectorAll('.chip').forEach((b) => {
     b.onclick = () => { store.set('lv', b.dataset.lv); showHome(); };
   });
   $('#sync').onclick = () => (pw() ? logout() : showAccount());
   if (ready) $('#up').onclick = () => { store.set('lv', next); showHome(); };
-  if (data.cards.length) $('#go').onclick = () => play(pickDaily(data.cards, got), showHome);
+  if (data.cards.length) $('#go').onclick = () => play(pickDaily(data.cards, got), showHome, data.cards);
   main.querySelectorAll('.topic').forEach((b) => {
     b.onclick = () => showTopic(data.topics.find((t) => t.id === b.dataset.t));
   });
@@ -207,18 +236,19 @@ function showTopic(t) {
   main.innerHTML = `
     <h2 class="center">${t.emoji} ${t.name}</h2>
     <button class="big-btn" id="go">碰一组 ✨</button>
-    <h3>收集墙 ${list.filter((c) => got.includes(c.id)).length}/${list.length}</h3>
+    <h3>贴纸墙 ${list.filter((c) => got.includes(c.id)).length}/${list.length}</h3>
     <div class="wall">${list.map((c) => got.includes(c.id)
-      ? `<button class="cell on" data-id="${c.id}" aria-label="${c.word}">${c.emoji}</button>`
+      ? `<button class="cell on${fresh.has(c.id) ? ' new' : ''}" data-id="${c.id}" aria-label="${c.word}">${c.emoji}</button>`
       : '<span class="cell" aria-label="未发现">?</span>').join('')}
     </div>
     <button class="big-btn" id="home">← 回到首页</button>`;
-  $('#go').onclick = () => play(pickDaily(list, got), back);
+  list.forEach((c) => fresh.delete(c.id)); // stamp each new sticker only once
+  $('#go').onclick = () => play(pickDaily(list, got), back, list);
   $('#home').onclick = showHome;
   main.querySelectorAll('.cell.on').forEach((b) => {
     b.onclick = () => {
       const c = list.find((x) => x.id === b.dataset.id);
-      main.innerHTML = cardHTML(c) + '<button class="big-btn" id="back">← 回到收集墙</button>';
+      main.innerHTML = cardHTML(c) + '<button class="big-btn" id="back">← 回到贴纸墙</button>';
       bindSay(c);
       speak(c.word);
       $('#back').onclick = back;
@@ -226,20 +256,24 @@ function showTopic(t) {
   });
 }
 
-function play(list, back) {
+// pool: the cards this set was drawn from (level or topic), for the progress bar at the end.
+function play(list, back, pool) {
   let i = 0;
-  let newCount = 0;
+  const won = [];
 
   const step = () => {
     if (i >= list.length) return finish();
     const c = list[i];
-    main.innerHTML = `<p class="progress">${i + 1} / ${list.length}</p>${cardHTML(c)}
+    const dots = list.map((_, k) => `<span class="${k < i ? 'done' : k === i ? 'now' : ''}"></span>`).join('');
+    main.innerHTML = `<p class="dots" role="img" aria-label="第 ${i + 1} 张, 共 ${list.length} 张">${dots}</p>${cardHTML(c)}
       <button class="big-btn" id="quiz">考考我 →</button>`;
     bindSay(c);
     speak(c.word);
     $('#quiz').onclick = () => quiz(c, (ok, answer) => {
+      beep(ok ? 'ok' : 'no');
+      if (ok) setTimeout(() => speak(c.word), 350); // ding first, then hear the word once more
       const got = gotAll();
-      if (!got.includes(c.id)) { got.push(c.id); store.set('got:all', got); newCount++; }
+      if (!got.includes(c.id)) { got.push(c.id); store.set('got:all', got); won.push(c); fresh.add(c.id); }
       $('#fb').innerHTML = `
         <p class="${ok ? 'ok' : 'no'}">${ok ? '🎉 答对啦！' : `差一点！答案是 <b lang="en">${answer}</b>`}</p>
         <button class="big-btn" id="next">${i + 1 < list.length ? '下一张 →' : '完成 🎊'}</button>`;
@@ -250,13 +284,20 @@ function play(list, back) {
 
   const finish = () => {
     store.set('streak', nextStreak(store.get('streak', { last: '', count: 0 })));
+    const got = gotAll();
+    const have = pool.filter((c) => got.includes(c.id)).length;
     main.innerHTML = `
       <div class="card center">
-        <div class="emoji">🎊</div>
         <h2>今日一碰完成！</h2>
-        <p>${newCount ? `新点亮了 <b>${newCount}</b> 个发现` : '复习了一轮老朋友'}，明天见～</p>
+        ${won.length
+          ? `<div class="stickers">${won.map((c, k) => `<span style="--k:${k}">${c.emoji}</span>`).join('')}</div>
+             <p>新集到 <b>${won.length}</b> 张贴纸，明天见～</p>`
+          : '<div class="stickers"><span>🎊</span></div><p>复习了一轮老朋友，明天见～</p>'}
+        <div class="bar" role="img" aria-label="已收集 ${have}/${pool.length}"><i style="width:${(100 * have) / pool.length}%"></i></div>
+        <small>${have} / ${pool.length}</small>
       </div>
       <button class="big-btn" id="home">返回</button>`;
+    won.forEach((_, k) => setTimeout(() => beep('pop'), 250 + k * 180)); // in step with the stamp animation
     $('#home').onclick = back;
   };
 
@@ -275,21 +316,29 @@ function quiz(c, done) {
         <p class="slots" lang="en" aria-live="polite"></p>
         <div class="tiles">${shuffle([...word].map((ch, k) => ({ ch, k })))
           .map((t) => `<button class="tile-l" data-k="${t.k}">${t.ch}</button>`).join('')}</div>
-        <button class="link" id="undo">⌫ 退一格</button>
+        <button class="tile-l undo" id="undo" aria-label="退一格">⌫</button>
       </div>
       <div id="fb"></div>`;
+    let tries = 0;
+    const slots = $('.slots');
     const render = () => {
-      $('.slots').textContent = word.split('').map((_, k) => typed[k]?.ch ?? '_').join(' ');
-      main.querySelectorAll('.tile-l').forEach((b) => { b.disabled = typed.some((t) => t.k === +b.dataset.k); });
+      slots.innerHTML = [...word].map((_, k) => `<span>${typed[k]?.ch ?? ''}</span>`).join('');
+      main.querySelectorAll('.tile-l[data-k]').forEach((b) => { b.disabled = typed.some((t) => t.k === +b.dataset.k); });
+      $('#undo').disabled = !typed.length;
     };
-    main.querySelectorAll('.tile-l').forEach((b) => {
+    main.querySelectorAll('.tile-l[data-k]').forEach((b) => {
       b.onclick = () => {
         typed.push({ ch: b.textContent, k: +b.dataset.k });
         render();
         if (typed.length === word.length) {
-          main.querySelectorAll('.tiles button, #undo').forEach((x) => { x.disabled = true; });
+          main.querySelectorAll('.tile-l').forEach((x) => { x.disabled = true; });
           const ok = typed.map((t) => t.ch).join('') === word;
-          if (ok) speak(word);
+          if (!ok && ++tries < 2) { // first miss: shake, clear, try again
+            beep('no');
+            slots.classList.add('miss');
+            setTimeout(() => { slots.classList.remove('miss'); typed = []; render(); }, 700);
+            return;
+          }
           done(ok, word);
         }
       };
@@ -313,8 +362,15 @@ function quiz(c, done) {
     </div>
     <div id="fb"></div>`;
   if (sayText) { $('.say').onclick = () => speak(sayText); speak(sayText); }
+  let tries = 0;
   main.querySelectorAll('.opt').forEach((b) => {
     b.onclick = () => {
+      if (b.textContent !== answer && ++tries < 2) { // first miss: grey it out, let them try again
+        b.disabled = true;
+        b.classList.add('tried');
+        beep('no');
+        return;
+      }
       main.querySelectorAll('.opt').forEach((x) => {
         x.disabled = true;
         if (x.textContent === answer) x.classList.add('right');

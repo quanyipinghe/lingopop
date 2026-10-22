@@ -50,6 +50,10 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .levels { display: flex; gap: 8px; overflow-x: auto; padding: 2px 4px 10px; margin: 0 -4px; }
 .chip { flex: none; border: 2px solid var(--ink); border-radius: 99px; background: var(--card); padding: 6px 12px; font-weight: 700; white-space: nowrap; }
 .chip.on { background: var(--grape); color: #fff; }
+.parent { margin-top: 28px; padding-top: 12px; border-top: 2px dashed #d8ccb4; font-size: 0.9rem; }
+.parent summary { cursor: pointer; text-align: center; opacity: 0.6; padding: 6px; }
+.parent p { margin: 8px 0 4px; opacity: 0.7; }
+.parent .link { display: block; margin: 8px auto 0; }
 .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
 .topic { display: grid; justify-items: center; gap: 2px; padding: 12px 8px; border: 3px solid var(--ink); border-radius: 18px; box-shadow: var(--shadow); }
 .topic .big { font-size: 2.2rem; }
@@ -68,9 +72,13 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .cell { aspect-ratio: 1; display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; background: #eee3cf; box-shadow: none; opacity: 0.6; }
 .cell.on { background: var(--card); box-shadow: var(--shadow); opacity: 1; }
 
-.progress { text-align: center; font-weight: 800; color: var(--grape); margin: 0 0 8px; }
+.dots { display: flex; justify-content: center; gap: 8px; margin: 0 0 12px; }
+.dots span { width: 12px; height: 12px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
+.dots .done { background: var(--mint); }
+.dots .now { background: var(--sun); transform: scale(1.35); }
 .card { padding: 20px; animation: pop 0.25s ease-out; }
-.card .emoji { font-size: 4rem; text-align: center; }
+.card .emoji { display: block; margin: 0 auto; font-size: 6rem; line-height: 1.1; background: none; border: 0; padding: 0; }
+.card .emoji:active { transform: scale(0.92); }
 .card h2 { text-align: center; margin: 6px 0 0; font-size: 2rem; }
 .zh { text-align: center; margin: 4px 0 14px; opacity: 0.7; }
 .fact { background: #f3efff; border-radius: 12px; padding: 12px 14px; line-height: 1.7; margin: 0; }
@@ -84,16 +92,30 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .opts.pics .opt { font-size: 3rem; text-align: center; padding: 10px 0; }
 .opt.right { background: var(--mint); color: #fff; }
 .opt.wrong { background: var(--pop); color: #fff; animation: shake 0.3s; }
+.opt.tried { opacity: 0.35; box-shadow: none; animation: shake 0.3s; }
 
-.slots { text-align: center; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px; min-height: 2.4rem; }
+.slots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 8px 0 18px; }
+.slots span { width: 36px; height: 44px; display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; border-bottom: 4px solid var(--ink); }
+.slots.miss span { color: var(--pop); animation: shake 0.3s; }
 .tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 8px; }
 .tile-l { width: 48px; height: 48px; font-size: 1.4rem; font-weight: 800; background: var(--sun); }
 .tile-l:disabled { opacity: 0.25; box-shadow: none; }
+.undo { display: block; margin: 4px auto 0; background: var(--card); }
 
 #fb p { text-align: center; font-size: 1.2rem; font-weight: 800; margin: 18px 0 0; }
 .ok { color: #138a7e; }
 .no { color: var(--pop); }
 
+.stickers { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 16px 0 8px; font-size: 3.2rem; }
+.stickers span { display: grid; place-items: center; width: 76px; height: 76px; background: #fff0c2; border: 3px solid var(--ink); border-radius: 18px;
+  box-shadow: var(--shadow); animation: stamp 0.35s calc(0.25s + var(--k, 0) * 0.18s) cubic-bezier(.3, 1.6, .5, 1) both; }
+.stickers span:nth-child(even) { rotate: 4deg; }
+.stickers span:nth-child(odd) { rotate: -3deg; }
+.cell.new { animation: stamp 0.35s cubic-bezier(.3, 1.6, .5, 1) both; }
+.bar { height: 14px; margin: 14px 0 4px; border: 2px solid var(--ink); border-radius: 99px; background: var(--card); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--mint); }
+
+@keyframes stamp { from { transform: scale(1.8); opacity: 0; } }
 @keyframes pop { from { transform: scale(0.94); opacity: 0; } }
 @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
