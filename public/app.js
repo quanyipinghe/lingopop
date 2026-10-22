@@ -1,4 +1,4 @@
-import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress, migrate } from './logic.js';
+import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress, migrate, nearest } from './logic.js';
 
 // Levels follow the Cambridge English path (CEFR); content lives in data/<id>.json.
 const LEVELS = {
@@ -86,6 +86,7 @@ async function showAccount(msg = '', signup = false) {
     </form>`;
   $('#mode').onclick = () => showAccount('', !signup);
   $('#back').onclick = showHome;
+  focusFirst('input');
   $('form').onsubmit = async (e) => {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
@@ -102,6 +103,26 @@ async function showAccount(msg = '', signup = false) {
 
 const main = document.querySelector('main');
 const $ = (sel) => main.querySelector(sel);
+
+// TV remote: every re-render drops focus, so land it on the page's main button.
+const focusFirst = (sel) => (main.querySelector(`${sel}:not(:disabled)`) || main.querySelector('button:not(:disabled)'))?.focus();
+const focusLost = () => { const a = document.activeElement; return !a || a === document.body || a.disabled; };
+
+// Arrow keys move between buttons; we do it ourselves since not every TV WebView does.
+const DIRS = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+document.addEventListener('keydown', (e) => {
+  const dir = DIRS[e.key];
+  if (!dir) return;
+  const a = document.activeElement;
+  if (a?.tagName === 'INPUT' && (dir === 'left' || dir === 'right')) return; // moving the text cursor
+  const els = [...main.querySelectorAll('button:not(:disabled), summary, input')].filter((el) => el.offsetParent !== null);
+  if (!els.length) return;
+  const i = els.includes(a) ? nearest(a.getBoundingClientRect(), els.map((el) => el.getBoundingClientRect()), dir) : 0;
+  if (i < 0) return; // nothing that way: let the page scroll
+  e.preventDefault();
+  els[i].focus();
+  els[i].scrollIntoView({ block: 'nearest' });
+});
 let lv, data;
 const cache = {};
 const load = async (id) => (cache[id] ??= await (await fetch(`data/${id}.json`)).json());
@@ -174,6 +195,7 @@ function showPicker() {
   main.querySelectorAll('[data-lv]').forEach((b) => {
     b.onclick = () => { store.set('lv', b.dataset.lv); showHome(); };
   });
+  focusFirst('.tile');
 }
 
 async function showHome() {
@@ -227,6 +249,7 @@ async function showHome() {
   main.querySelectorAll('.topic').forEach((b) => {
     b.onclick = () => showTopic(data.topics.find((t) => t.id === b.dataset.t));
   });
+  focusFirst(data.cards.length ? '#go' : '.topic');
 }
 
 function showTopic(t) {
@@ -252,8 +275,10 @@ function showTopic(t) {
       bindSay(c);
       speak(c.word);
       $('#back').onclick = back;
+      focusFirst('#back');
     };
   });
+  focusFirst('#go');
 }
 
 // pool: the cards this set was drawn from (level or topic), for the progress bar at the end.
@@ -269,6 +294,7 @@ function play(list, back, pool) {
       <button class="big-btn" id="quiz">考考我 →</button>`;
     bindSay(c);
     speak(c.word);
+    focusFirst('#quiz');
     $('#quiz').onclick = () => quiz(c, (ok, answer) => {
       beep(ok ? 'ok' : 'no');
       if (ok) setTimeout(() => speak(c.word), 350); // ding first, then hear the word once more
@@ -299,6 +325,7 @@ function play(list, back, pool) {
       <button class="big-btn" id="home">返回</button>`;
     won.forEach((_, k) => setTimeout(() => beep('pop'), 250 + k * 180)); // in step with the stamp animation
     $('#home').onclick = back;
+    focusFirst('#home');
   };
 
   step();
@@ -325,6 +352,7 @@ function quiz(c, done) {
       slots.innerHTML = [...word].map((_, k) => `<span>${typed[k]?.ch ?? ''}</span>`).join('');
       main.querySelectorAll('.tile-l[data-k]').forEach((b) => { b.disabled = typed.some((t) => t.k === +b.dataset.k); });
       $('#undo').disabled = !typed.length;
+      if (focusLost()) (main.querySelector('.tile-l[data-k]:not(:disabled)') || $('#undo')).focus();
     };
     main.querySelectorAll('.tile-l[data-k]').forEach((b) => {
       b.onclick = () => {
@@ -345,6 +373,7 @@ function quiz(c, done) {
     });
     $('#undo').onclick = () => { typed.pop(); render(); };
     render();
+    focusFirst('.tile-l[data-k]');
     return;
   }
 
@@ -368,6 +397,7 @@ function quiz(c, done) {
       if (b.textContent !== answer && ++tries < 2) { // first miss: grey it out, let them try again
         b.disabled = true;
         b.classList.add('tried');
+        focusFirst('.opt');
         beep('no');
         return;
       }
@@ -379,6 +409,7 @@ function quiz(c, done) {
       done(b.textContent === answer, pic ? `${answer} ${c.word}` : answer);
     };
   });
+  focusFirst('.opt');
 }
 
 pull();
