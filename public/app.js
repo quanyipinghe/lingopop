@@ -1,4 +1,4 @@
-import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress, migrate, nearest } from './logic.js';
+import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress, migrate, nearest, mathGate } from './logic.js';
 
 // Levels follow the Cambridge English path (CEFR); content lives in data/<id>.json.
 const LEVELS = {
@@ -266,7 +266,31 @@ async function showHome() {
   main.querySelectorAll('.topic').forEach((b) => {
     b.onclick = () => forward(() => showTopic(data.topics.find((t) => t.id === b.dataset.t)), showHome);
   });
+  gateParent($('details.parent'));
   focusFirst(data.cards.length ? '#go' : '.topic');
+}
+
+// Parent settings open only after a sum a 3-year-old can't do. The quiz goes after the
+// <details>, since a closed one hides its content.
+function gateParent(parent) {
+  const summary = parent.querySelector('summary');
+  summary.onclick = (e) => {
+    if (parent.open) return; // closing needs no check
+    e.preventDefault();
+    if ($('.gate')) { $('.gate').remove(); return summary.focus(); }
+    const g = mathGate();
+    parent.insertAdjacentHTML('afterend', `<div class="gate"><p>家长验证: ${g.q} = ?</p>
+      <div class="opts">${g.options.map((n) => `<button class="opt">${n}</button>`).join('')}</div></div>`);
+    main.querySelectorAll('.gate button').forEach((b) => {
+      b.onclick = () => {
+        $('.gate').remove();
+        if (+b.textContent !== g.answer) return summary.focus();
+        parent.open = true;
+        focusFirst('.levels .chip.on');
+      };
+    });
+    focusFirst('.gate button');
+  };
 }
 
 function showTopic(t) {

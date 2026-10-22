@@ -57,6 +57,8 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .parent summary { cursor: pointer; text-align: center; opacity: 0.6; padding: 6px; }
 .parent p { margin: 8px 0 4px; opacity: 0.7; }
 .parent .link { display: block; margin: 8px auto 0; }
+.gate { text-align: center; margin-top: 8px; }
+.gate .opts { grid-template-columns: repeat(4, 1fr); }
 .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
 .topic { display: grid; justify-items: center; gap: 2px; padding: 12px 8px; border: 3px solid var(--ink); border-radius: 18px; box-shadow: var(--shadow); }
 .topic .big { font-size: 2.2rem; }
