@@ -132,7 +132,9 @@ document.addEventListener('keydown', (e) => {
   if (!dir) return;
   const a = document.activeElement;
   if (a?.tagName === 'INPUT' && (dir === 'left' || dir === 'right')) return; // moving the text cursor
-  const els = [...main.querySelectorAll('button:not(:disabled), summary, input')].filter((el) => el.offsetParent !== null);
+  const els = [...main.querySelectorAll('button:not(:disabled), summary, input')]
+    // closed <details> keep a layout box in new Chrome, so check for them explicitly
+    .filter((el) => el.offsetParent !== null && !el.closest('details:not([open]) > :not(summary)'));
   if (!els.length) return;
   const i = els.includes(a) ? nearest(a.getBoundingClientRect(), els.map((el) => el.getBoundingClientRect()), dir) : 0;
   if (i < 0) return; // nothing that way: let the page scroll
