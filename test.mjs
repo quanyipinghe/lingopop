@@ -1,6 +1,6 @@
 // Run: node test.mjs
 import assert from 'node:assert/strict';
-import { nextStreak, displayStreak, pickDaily, today, audioFile, audioTexts, linkEnglish, mergeProgress, migrate } from './public/logic.js';
+import { nextStreak, displayStreak, pickDaily, today, audioFile, audioTexts, linkEnglish, mergeProgress, migrate, mathGate, nearest } from './public/logic.js';
 import { readdirSync } from 'node:fs';
 import { readFileSync, existsSync } from 'node:fs';
 
@@ -81,3 +81,26 @@ assert.equal(
   '说 <button class="en" lang="en" data-say="Check, please!">Check, please!</button>（英式说 <button class="en" lang="en" data-say="the bill">the bill</button>）',
 );
 console.log('linkEnglish ok');
+
+for (let i = 0; i < 200; i++) {
+  const g = mathGate();
+  const [a, b] = g.q.split(' + ').map(Number);
+  assert.ok(a >= 10 && a <= 49 && b >= 10 && b <= 49);
+  assert.equal(g.answer, a + b);
+  assert.equal(g.options.length, 4);
+  assert.equal(new Set(g.options).size, 4);
+  assert.ok(g.options.includes(g.answer));
+  assert.ok(g.options.every((n) => n > 0));
+}
+{ // 2x2 grid of 100x100 boxes with 20px gaps
+  const r = (x, y) => ({ left: x, top: y, right: x + 100, bottom: y + 100 });
+  const grid = [r(0, 0), r(120, 0), r(0, 120), r(120, 120)];
+  assert.equal(nearest(grid[0], grid, 'right'), 1);
+  assert.equal(nearest(grid[0], grid, 'down'), 2);
+  assert.equal(nearest(grid[3], grid, 'up'), 1);
+  assert.equal(nearest(grid[3], grid, 'left'), 2);
+  assert.equal(nearest(grid[0], grid, 'up'), -1);
+  // straight below beats diagonal even if diagonal is a bit closer in raw distance
+  const col = [r(0, 0), r(0, 300), r(150, 200)];
+  assert.equal(nearest(col[0], col, 'down'), 1);
+}

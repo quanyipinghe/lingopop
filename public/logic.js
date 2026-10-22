@@ -81,3 +81,28 @@ export function mergeProgress(local, remote) {
   if (a && b) out.streak = a.last > b.last || (a.last === b.last && a.count > b.count) ? a : b;
   return out;
 }
+
+// Parent check a 3-year-old can't pass by mashing buttons: two-digit sum, 4 choices.
+export function mathGate(rand = Math.random) {
+  const pick = () => 10 + Math.floor(rand() * 40);
+  const a = pick(), b = pick(), answer = a + b;
+  const opts = new Set([answer]);
+  while (opts.size < 4) opts.add(answer + (rand() < 0.5 ? -1 : 1) * (1 + Math.floor(rand() * 10)));
+  return { q: `${a} + ${b}`, answer, options: shuffle([...opts]) };
+}
+
+// Spatial navigation for the TV remote: pick the closest box in the arrow's direction,
+// weighting sideways drift x2 so a box straight ahead beats a nearer diagonal one.
+export function nearest(from, rects, dir) {
+  const cx = (r) => (r.left + r.right) / 2, cy = (r) => (r.top + r.bottom) / 2;
+  let best = -1, bestScore = Infinity;
+  rects.forEach((r, i) => {
+    const dx = cx(r) - cx(from), dy = cy(r) - cy(from);
+    const [main, side] = dir === 'left' || dir === 'right' ? [dx, dy] : [dy, dx];
+    const forward = dir === 'right' || dir === 'down' ? main : -main;
+    if (forward <= 1) return; // behind, level with, or the same box
+    const score = forward + 2 * Math.abs(side);
+    if (score < bestScore) { bestScore = score; best = i; }
+  });
+  return best;
+}
