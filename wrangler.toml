@@ -5,4 +5,4 @@ compatibility_date = "2026-10-01"
 # Progress sync. Create with: npx wrangler kv namespace create lingopop
 [[kv_namespaces]]
 binding = "LP"
-id = "REPLACE_WITH_KV_ID"
+id = "af826a111ddd47a2a79c773c3246f4fd"
