@@ -1,6 +1,9 @@
 {
   "topics": [
-    {"id": "stories", "emoji": "📖", "name": "单词的故事", "kind": "words"}
+    {"id": "stories", "emoji": "📖", "name": "单词的故事", "kind": "words"},
+    {"id": "grammar", "emoji": "🧩", "name": "语法小窍门", "kind": "words"},
+    {"id": "me", "emoji": "🙋", "name": "说说自己", "kind": "talk"},
+    {"id": "space", "emoji": "🔭", "name": "太空与科学", "kind": "words"}
   ],
   "cards": [
     {"id": "s01", "topic": "stories", "emoji": "📞", "word": "telephone", "zh": "电话", "fact": "tele = 远，phone = 声音。telephone 就是“远方的声音”，television 就是“远方的画面”。", "quiz": {"type": "choice", "q": "telescope 里的 tele 是什么意思？", "options": ["远", "电", "小"]}},
@@ -11,6 +14,40 @@
     {"id": "s14", "topic": "stories", "emoji": "🎧", "word": "audio", "zh": "音频", "fact": "aud = 听。audio 是声音，audience 是听众，audition 是“听一听你唱得怎么样”的试音。", "quiz": {"type": "choice", "q": "audience 是什么人？", "options": ["听众", "演员", "作者"]}},
     {"id": "s15", "topic": "stories", "emoji": "👀", "word": "vision", "zh": "视力", "fact": "vis = 看。vision 是视力，visible 是看得见的，visit 是“去看看”。", "quiz": {"type": "choice", "q": "invisible 是什么意思？", "options": ["看不见的", "听不见的", "摸不着的"]}},
     {"id": "s16", "topic": "stories", "emoji": "👋", "word": "goodbye", "zh": "再见", "fact": "goodbye 是 God be with ye（愿上帝与你同在）一路缩出来的。", "quiz": {"type": "choice", "q": "goodbye 最初是哪句话的缩写？", "options": ["God be with ye", "Good boy", "Go buy"]}},
-    {"id": "s20", "topic": "stories", "emoji": "🔁", "word": "recycle", "zh": "回收利用", "fact": "re = 再一次，cycle = 循环。recycle 就是“再循环一次”。", "quiz": {"type": "spell"}}
+    {"id": "s20", "topic": "stories", "emoji": "🔁", "word": "recycle", "zh": "回收利用", "fact": "re = 再一次，cycle = 循环。recycle 就是“再循环一次”。", "quiz": {"type": "spell"}},
+    {"id": "L3-001", "topic": "stories", "emoji": "😱", "word": "nightmare", "zh": "噩梦", "fact": "nightmare 里的 mare 不是母马，而是古代传说里压在睡觉的人胸口的小妖怪。", "quiz": {"type": "choice", "q": "nightmare 里的 mare 原来指什么？", "options": ["压在人胸口的小妖怪", "母马", "大海"]}},
+    {"id": "L3-002", "topic": "stories", "emoji": "💪", "word": "muscle", "zh": "肌肉", "fact": "muscle 来自拉丁语“小老鼠”，古人觉得肌肉动起来，像皮肤下有只小老鼠在跑。", "quiz": {"type": "choice", "q": "muscle 最早的意思是？", "options": ["小老鼠", "大力士", "骨头"]}},
+    {"id": "L3-003", "topic": "stories", "emoji": "🌪️", "word": "disaster", "zh": "灾难", "fact": "dis（坏）+ aster（星星）：古人觉得灾难是星星的位置不好带来的。", "quiz": {"type": "choice", "q": "disaster 里的 aster 是什么意思？", "options": ["星星", "灾难", "天空"]}},
+    {"id": "L3-004", "topic": "stories", "emoji": "🔤", "word": "alphabet", "zh": "字母表", "fact": "alphabet 来自希腊字母表的头两个字母：alpha 和 beta。", "quiz": {"type": "choice", "q": "alphabet 来自哪两个希腊字母？", "options": ["alpha 和 beta", "a 和 b", "alpha 和 omega"]}},
+    {"id": "L3-005", "topic": "stories", "emoji": "🎃", "word": "pumpkin", "zh": "南瓜", "fact": "pumpkin 来自希腊语，原意是“被太阳晒熟的大瓜”。", "quiz": {"type": "spell"}},
+    {"id": "L3-006", "topic": "stories", "emoji": "👖", "word": "jeans", "zh": "牛仔裤", "fact": "做牛仔裤的布料最早来自意大利城市热那亚，法语叫它 Gênes，jeans 就是这么来的。", "quiz": {"type": "choice", "q": "jeans 的名字来自哪里？", "options": ["意大利城市热那亚", "一个叫 Jean 的人", "美国牛仔"]}},
+    {"id": "L3-007", "topic": "stories", "emoji": "🌷", "word": "tulip", "zh": "郁金香", "fact": "tulip 来自土耳其语的“头巾”，因为郁金香的花朵像缠起来的头巾。", "quiz": {"type": "choice", "q": "tulip 的名字像什么？", "options": ["头巾", "杯子", "嘴唇"]}},
+    {"id": "L3-008", "topic": "stories", "emoji": "😨", "word": "panic", "zh": "恐慌", "fact": "panic 来自希腊神话里的牧神 Pan，传说他会突然跳出来，把路人吓坏。", "quiz": {"type": "choice", "q": "panic 的名字来自谁？", "options": ["牧神 Pan", "平底锅 pan", "熊猫 panda"]}},
+    {"id": "L3-009", "topic": "stories", "emoji": "🥣", "word": "cereal", "zh": "麦片", "fact": "cereal 来自古罗马的农业女神 Ceres。", "quiz": {"type": "listen", "options": ["cereal", "serial", "cheerful"]}},
+    {"id": "L3-010", "topic": "stories", "emoji": "🌋", "word": "volcano", "zh": "火山", "fact": "volcano 来自古罗马的火神 Vulcan。", "quiz": {"type": "choice", "q": "volcano 来自谁的名字？", "options": ["火神 Vulcan", "海神 Neptune", "战神 Mars"]}},
+    {"id": "L3-011", "topic": "stories", "emoji": "❄️", "word": "January", "zh": "一月", "fact": "January 来自罗马的门神 Janus，他有两张脸，一张看过去，一张看未来，正适合一年的开头。", "quiz": {"type": "choice", "q": "门神 Janus 为什么适合一月？", "options": ["一张脸看过去，一张脸看未来", "他很怕冷", "他喜欢开门"]}},
+    {"id": "L3-012", "topic": "stories", "emoji": "🧶", "word": "clue", "zh": "线索", "fact": "clue 原来写作 clew，意思是“线团”。希腊神话里，英雄靠一团线走出了迷宫。", "quiz": {"type": "choice", "q": "clue 最早的意思是？", "options": ["线团", "钥匙", "脚印"]}},
+    {"id": "L3-013", "topic": "grammar", "emoji": "🚶", "word": "went", "zh": "去了（go 的过去式）", "fact": "go 的过去式不是 goed，而是 went。", "quiz": {"type": "choice", "q": "Yesterday I ___ to the park.", "options": ["went", "goed", "go"]}},
+    {"id": "L3-014", "topic": "grammar", "emoji": "🍽️", "word": "ate", "zh": "吃了（eat 的过去式）", "fact": "eat 的过去式是 ate，读音和 eight（八）一样！", "quiz": {"type": "choice", "q": "Last night I ___ noodles.", "options": ["ate", "eated", "eat"]}},
+    {"id": "L3-015", "topic": "grammar", "emoji": "🦒", "word": "taller than", "zh": "比……高", "fact": "比较用 -er：tall → taller，再加上 than：I'm taller than you.", "quiz": {"type": "choice", "q": "“长颈鹿比大象高”怎么说？", "options": ["The giraffe is taller than the elephant.", "The giraffe is more tall than the elephant.", "The giraffe is taller as the elephant."]}},
+    {"id": "L3-016", "topic": "grammar", "emoji": "🏆", "word": "best", "zh": "最好的", "fact": "good → better → best，变化得很特别。", "quiz": {"type": "choice", "q": "good 的“最……”形式是？", "options": ["best", "goodest", "most good"]}},
+    {"id": "L3-017", "topic": "grammar", "emoji": "🍏", "word": "an apple", "zh": "一个苹果", "fact": "元音开头的词前面用 an：an apple、an egg。hour 的 h 不发音，所以是 an hour。", "quiz": {"type": "choice", "q": "下面哪个对？", "options": ["an hour", "a hour", "an house"]}},
+    {"id": "L3-018", "topic": "grammar", "emoji": "👥", "word": "people", "zh": "人们", "fact": "people 本身就是复数：一个人是 a person，两个人是 two people。", "quiz": {"type": "choice", "q": "“三个人”怎么说？", "options": ["three people", "three peoples", "three person"]}},
+    {"id": "L3-019", "topic": "grammar", "emoji": "📅", "word": "on Monday", "zh": "在星期一", "fact": "星期前面用 on：on Monday；月份用 in：in May；钟点用 at：at 7 o'clock。", "quiz": {"type": "choice", "q": "“在七点”怎么说？", "options": ["at 7 o'clock", "on 7 o'clock", "in 7 o'clock"]}},
+    {"id": "L3-020", "topic": "grammar", "emoji": "🙅", "word": "doesn't", "zh": "不（第三人称）", "fact": "说他、她不喜欢，要用 doesn't：He doesn't like fish.", "quiz": {"type": "choice", "q": "哪句是对的？", "options": ["She doesn't like milk.", "She don't like milk.", "She not like milk."]}},
+    {"id": "L3-021", "topic": "me", "emoji": "🎨", "word": "I'm good at drawing.", "zh": "我擅长画画。", "fact": "擅长什么就说 I'm good at...，后面的动作要加 ing。", "quiz": {"type": "choice", "q": "“我擅长游泳”怎么说？", "options": ["I'm good at swimming.", "I'm good in swim.", "I'm well at swimming."]}},
+    {"id": "L3-022", "topic": "me", "emoji": "🚀", "word": "What do you want to be?", "zh": "你长大想做什么？", "fact": "被问长大想做什么，就回答 I want to be a scientist. 或者 I want to be an astronaut.", "quiz": {"type": "choice", "q": "别人问 What do you want to be?，你回答？", "options": ["I want to be a doctor.", "I want to be ten.", "I want a doctor."]}},
+    {"id": "L3-023", "topic": "me", "emoji": "🌍", "word": "Have you ever been to Beijing?", "zh": "你去过北京吗？", "fact": "Have you ever...? 问的是“你有没有……过”。", "quiz": {"type": "choice", "q": "Have you ever been to Beijing? 是什么意思？", "options": ["你去过北京吗？", "你要去北京吗？", "你在北京吗？"]}},
+    {"id": "L3-024", "topic": "me", "emoji": "🔁", "word": "How often do you play football?", "zh": "你多久踢一次足球？", "fact": "问多久一次用 How often...?，回答 Every day. 或 Twice a week.", "quiz": {"type": "choice", "q": "How often do you play football? 最好的回答是？", "options": ["Twice a week.", "Two balls.", "At the park."]}},
+    {"id": "L3-025", "topic": "me", "emoji": "🍰", "word": "I'd like some cake, please.", "zh": "我想要一些蛋糕。", "fact": "I'd like 就是 I would like，比 I want 更有礼貌。", "quiz": {"type": "listen", "options": ["I'd like some cake, please.", "I like some cake, please.", "I'd bake some cake, please."]}},
+    {"id": "L3-026", "topic": "me", "emoji": "🕒", "word": "What's the time?", "zh": "几点了？", "fact": "问时间说 What's the time? 或 What time is it?，回答 It's three o'clock.", "quiz": {"type": "choice", "q": "别人问 What time is it?，你回答？", "options": ["It's three o'clock.", "It's three hours.", "It has three o'clock."]}},
+    {"id": "L3-027", "topic": "me", "emoji": "😌", "word": "Don't worry.", "zh": "别担心。", "fact": "朋友紧张或者做错了事，可以安慰他：Don't worry!", "quiz": {"type": "listen", "options": ["Don't worry.", "Don't hurry.", "Don't forget."]}},
+    {"id": "L3-028", "topic": "me", "emoji": "🙋‍♂️", "word": "Me too!", "zh": "我也是！", "fact": "朋友说 I love pizza!，你也是，就说 Me too!；朋友说不喜欢，你也不喜欢，要说 Me neither!", "quiz": {"type": "choice", "q": "朋友说 I don't like rain.，你也不喜欢，你说？", "options": ["Me neither.", "Me too.", "Me also."]}},
+    {"id": "L3-029", "topic": "me", "emoji": "👋", "word": "See you later!", "zh": "回头见！", "fact": "分别时说 See you later!，不一定真的很快再见，就像中文的“回头见”。", "quiz": {"type": "listen", "options": ["See you later!", "See you tomorrow!", "See you soon!"]}},
+    {"id": "L3-030", "topic": "space", "emoji": "🪐", "word": "planet", "zh": "行星", "fact": "planet 来自希腊语“流浪者”，古人看到它们在星星之间走来走去。", "quiz": {"type": "choice", "q": "planet 最早的意思是？", "options": ["流浪者", "大石头", "发光的东西"]}},
+    {"id": "L3-031", "topic": "space", "emoji": "🌍", "word": "Earth", "zh": "地球", "fact": "Earth 是地球，也是泥土。太阳系的行星里，只有地球的名字不是来自神话里的神。", "quiz": {"type": "choice", "q": "下面哪颗行星的名字不是来自神话？", "options": ["Earth", "Mars", "Venus"]}},
+    {"id": "L3-032", "topic": "space", "emoji": "🔴", "word": "Mars", "zh": "火星", "fact": "火星叫 Mars，来自罗马的战神，因为它红红的，像战场上的血。", "quiz": {"type": "listen", "options": ["Mars", "Mask", "March"]}},
+    {"id": "L3-033", "topic": "space", "emoji": "🍎", "word": "gravity", "zh": "重力", "fact": "传说牛顿看到苹果掉下来，想到了 gravity（重力）。", "quiz": {"type": "choice", "q": "苹果会往下掉，是因为？", "options": ["gravity", "gravy", "galaxy"]}},
+    {"id": "L3-034", "topic": "space", "emoji": "🧲", "word": "magnet", "zh": "磁铁", "fact": "magnet 的名字来自古希腊的一个地方 Magnesia，那里能找到天然的磁石。", "quiz": {"type": "spell"}}
   ]
 }

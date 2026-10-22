@@ -38,16 +38,34 @@ KV 里每个账号两个键: `user:<用户名小写>`（加盐哈希的密码）
 
 ## 添加内容
 
-编辑 `public/data/{kids,students,adults}.json`，每张卡:
+内容按剑桥英语 (CEFR) 分成 8 级，每级一个文件 `public/data/L0.json` … `L7.json`：
 
-    {"id":"k21","emoji":"🐼","word":"panda","zh":"熊猫","fact":"原来如此的小知识","quiz":{...}}
+| 级 | 名称 | 对应 | 年龄 |
+|----|------|------|------|
+| L0 | 启蒙 | Pre-A1 之前 | 3–4 岁 |
+| L1 | Starters | Pre-A1 | 5–6 岁 |
+| L2 | Movers | A1 | 小学低年级 |
+| L3 | Flyers | A2 | 小学高年级 |
+| L4 | KET | A2 | 初一 |
+| L5 | PET | B1 | 初中 |
+| L6 | FCE | B2 | 高中 |
+| L7 | CAE | C1 | 大学 |
 
-`quiz` 三种:
+每个文件是 `{"topics": [...], "cards": [...]}`。主题 `kind` 是 `words`（生活主题）或 `talk`（情景对话）：
+
+    {"id":"farm","emoji":"🐮","name":"农场动物","kind":"words"}
+
+每张卡用 `topic` 指向本级的一个主题:
+
+    {"id":"L0-050","topic":"farm","emoji":"🐄","word":"cow","zh":"奶牛","fact":"原来如此的小知识","quiz":{...}}
+
+`quiz` 四种:
+- `{"type":"picture","options":["🐄","🐷","🐑"]}` 听单词选图，给不识字的孩子用，第一项必须是卡片自己的 emoji
 - `{"type":"spell"}` 拼写 `word`（只能是单个英文单词）
 - `{"type":"choice","q":"题目","options":["正确答案","干扰项",...]}`
 - `{"type":"listen","options":["正确答案（会被朗读）","干扰项",...]}`
 
-**`options` 第一项永远是正确答案**，页面上会随机打乱。新卡追加在末尾，`id` 不要复用。
+**`options` 第一项永远是正确答案**，页面上会随机打乱。`id` 全局唯一，不要复用（旧卡 k01/s01/a01 保留原 id，旧进度才能接上）。
 
 改完内容后生成发音并自检:
 
