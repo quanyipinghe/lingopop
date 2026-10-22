@@ -91,6 +91,12 @@ export function mathGate(rand = Math.random) {
   return { q: `${a} + ${b}`, answer, options: shuffle([...opts]) };
 }
 
+// After a wrong gate answer the gate stays shut for a while, so mashing OK can't win.
+export function cooldown(ms, now = () => Date.now()) {
+  let until = 0;
+  return { ready: () => now() >= until, fail: () => { until = now() + ms; } };
+}
+
 // Spatial navigation for the TV remote: pick the closest box in the arrow's direction,
 // weighting sideways drift x2 so a box straight ahead beats a nearer diagonal one.
 export function nearest(from, rects, dir) {

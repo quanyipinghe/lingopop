@@ -1,4 +1,4 @@
-import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress, migrate, nearest, mathGate } from './logic.js';
+import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress, migrate, nearest, mathGate, cooldown } from './logic.js';
 
 // Levels follow the Cambridge English path (CEFR); content lives in data/<id>.json.
 const LEVELS = {
@@ -272,26 +272,38 @@ async function showHome() {
   focusFirst(data.cards.length ? '#go' : '.topic');
 }
 
-// Parent settings open only after a sum a 3-year-old can't do. The quiz goes after the
-// <details>, since a closed one hides its content.
+// Parent settings open only after two sums in a row; a miss shuts the gate for a minute,
+// so a 3-year-old mashing OK can't get in. The quiz goes after the <details>, since a closed
+// one hides its content.
+const gateWait = cooldown(60000);
 function gateParent(parent) {
   const summary = parent.querySelector('summary');
-  summary.onclick = (e) => {
-    if (parent.open) return; // closing needs no check
-    e.preventDefault();
-    if ($('.gate')) { $('.gate').remove(); return summary.focus(); }
+  const close = () => { $('.gate')?.remove(); summary.focus(); };
+  const ask = (left) => {
+    $('.gate')?.remove();
+    if (!gateWait.ready()) {
+      parent.insertAdjacentHTML('afterend', '<div class="gate"><p>答错了, 1 分钟后再试</p></div>');
+      return;
+    }
     const g = mathGate();
     parent.insertAdjacentHTML('afterend', `<div class="gate"><p>家长验证: ${g.q} = ?</p>
       <div class="opts">${g.options.map((n) => `<button class="opt">${n}</button>`).join('')}</div></div>`);
     main.querySelectorAll('.gate button').forEach((b) => {
       b.onclick = () => {
+        if (+b.textContent !== g.answer) { gateWait.fail(); return close(); }
+        if (left > 1) return ask(left - 1);
         $('.gate').remove();
-        if (+b.textContent !== g.answer) return summary.focus();
         parent.open = true;
         focusFirst('.levels .chip.on');
       };
     });
     focusFirst('.gate button');
+  };
+  summary.onclick = (e) => {
+    if (parent.open) return; // closing needs no check
+    e.preventDefault();
+    if ($('.gate')) return close();
+    ask(2);
   };
 }
 

@@ -1,6 +1,6 @@
 // Run: node test.mjs
 import assert from 'node:assert/strict';
-import { nextStreak, displayStreak, pickDaily, today, audioFile, audioTexts, linkEnglish, mergeProgress, migrate, mathGate, nearest } from './public/logic.js';
+import { nextStreak, displayStreak, pickDaily, today, audioFile, audioTexts, linkEnglish, mergeProgress, migrate, mathGate, nearest, cooldown } from './public/logic.js';
 import { readdirSync } from 'node:fs';
 import { readFileSync, existsSync } from 'node:fs';
 
@@ -103,4 +103,13 @@ for (let i = 0; i < 200; i++) {
   // straight below beats diagonal even if diagonal is a bit closer in raw distance
   const col = [r(0, 0), r(0, 300), r(150, 200)];
   assert.equal(nearest(col[0], col, 'down'), 1);
+}
+{ // a wrong gate answer shuts the gate for a minute
+  let t = 1000;
+  const c = cooldown(60000, () => t);
+  assert.ok(c.ready());
+  c.fail();
+  assert.ok(!c.ready());
+  t += 59999; assert.ok(!c.ready());
+  t += 1; assert.ok(c.ready());
 }
