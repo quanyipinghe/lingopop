@@ -15,7 +15,7 @@ const LV_IDS = Object.keys(LEVELS);
 
 const store = {
   get(k, d) {
-    try { return JSON.parse(localStorage.getItem('lp:' + k)) ?? d; } catch { return d; }
+    try { const v = JSON.parse(localStorage.getItem('lp:' + k)); return v == null ? d : v; } catch (e) { return d; }
   },
   set(k, v) { localStorage.setItem('lp:' + k, JSON.stringify(v)); push(); },
 };
@@ -25,13 +25,13 @@ const store = {
 const pw = () => localStorage.getItem('lp:pw');
 const api = (opts = {}) => fetch('api/progress', {
   ...opts,
-  headers: { 'x-user': encodeURIComponent(localStorage.getItem('lp:user') ?? ''), 'x-pw': encodeURIComponent(pw()) },
+  headers: { 'x-user': encodeURIComponent(localStorage.getItem('lp:user') || ''), 'x-pw': encodeURIComponent(pw()) },
 });
 const forget = () => { localStorage.removeItem('lp:user'); localStorage.removeItem('lp:pw'); };
 
-const snapshot = () => Object.fromEntries(Object.keys(localStorage)
+const snapshot = () => Object.keys(localStorage)
   .filter((k) => k.startsWith('lp:') && k !== 'lp:pw' && k !== 'lp:user')
-  .map((k) => [k.slice(3), store.get(k.slice(3))]));
+  .reduce((o, k) => { o[k.slice(3)] = store.get(k.slice(3)); return o; }, {});
 
 let pushTimer;
 function push() {
@@ -54,7 +54,7 @@ async function pull() {
       const r = await api();
       if (r.status === 401) { forget(); return showAccount('用户名或密码不对'); }
       if (r.ok) { p = mergeProgress(p, await r.json()); synced = true; }
-    } catch { /* offline: keep local */ }
+    } catch (e) { /* offline: keep local */ }
   }
   save(migrate(p));
   if (synced) push();
@@ -65,7 +65,7 @@ async function pull() {
 async function logout() {
   clearTimeout(pushTimer);
   const r = await api({ method: 'PUT', body: JSON.stringify(snapshot()) }).catch(() => null);
-  if (!r?.ok) return alert('进度还没同步上去，联网后再退出');
+  if (!(r && r.ok)) return alert('进度还没同步上去，联网后再退出');
   Object.keys(localStorage).filter((k) => k.startsWith('lp:')).forEach((k) => localStorage.removeItem(k));
   goHome();
 }
@@ -89,11 +89,11 @@ async function showAccount(msg = '', signup = false) {
   focusFirst('input');
   $('form').onsubmit = async (e) => {
     e.preventDefault();
-    const f = Object.fromEntries(new FormData(e.target));
+    const f = {}; new FormData(e.target).forEach((v, k) => { f[k] = v; });
     if (signup) {
       if (f.pw !== f.pw2) return showAccount('两次密码不一样', true);
       const r = await fetch('api/account', { method: 'POST', body: JSON.stringify({ user: f.user, pw: f.pw }) }).catch(() => null);
-      if (!r?.ok) return showAccount(r?.status === 409 ? '这个用户名已经有人用了' : '创建失败，请稍后再试', true);
+      if (!(r && r.ok)) return showAccount(r && r.status === 409 ? '这个用户名已经有人用了' : '创建失败，请稍后再试', true);
     }
     localStorage.setItem('lp:user', f.user.trim());
     localStorage.setItem('lp:pw', f.pw);
@@ -105,7 +105,7 @@ const main = document.querySelector('main');
 const $ = (sel) => main.querySelector(sel);
 
 // TV remote: every re-render drops focus, so land it on the page's main button.
-const focusFirst = (sel) => (main.querySelector(`${sel}:not(:disabled)`) || main.querySelector('button:not(:disabled)'))?.focus();
+const focusFirst = (sel) => { const b = main.querySelector(`${sel}:not(:disabled)`) || main.querySelector('button:not(:disabled)'); if (b) b.focus(); };
 const focusLost = () => { const a = document.activeElement; return !a || a === document.body || a.disabled; };
 
 // The remote's Back key = the on-screen back button. Each sub-page pushes one history
@@ -119,7 +119,7 @@ function forward(render, back) {
 const goBack = () => (backs.length ? history.back() : showHome()); // no entry of ours (e.g. reload): just go home
 const goHome = () => (backs.length ? history.go(-backs.length) : showHome());
 addEventListener('popstate', (e) => {
-  const d = e.state?.d ?? 0;
+  const d = (e.state && e.state.d) || 0;
   let back = showHome;
   while (backs.length > d) back = backs.pop();
   d === 0 ? showHome() : back();
@@ -131,7 +131,7 @@ document.addEventListener('keydown', (e) => {
   const dir = DIRS[e.key];
   if (!dir) return;
   const a = document.activeElement;
-  if (a?.tagName === 'INPUT' && (dir === 'left' || dir === 'right')) return; // moving the text cursor
+  if (a && a.tagName === 'INPUT' && (dir === 'left' || dir === 'right')) return; // moving the text cursor
   const els = [...main.querySelectorAll('button:not(:disabled), summary, input')]
     // closed <details> keep a layout box in new Chrome, so check for them explicitly
     .filter((el) => el.offsetParent !== null && !el.closest('details:not([open]) > :not(summary)'));
@@ -144,7 +144,7 @@ document.addEventListener('keydown', (e) => {
 });
 let lv, data;
 const cache = {};
-const load = async (id) => (cache[id] ??= await (await fetch(`data/${id}.json`)).json());
+const load = async (id) => (cache[id] || (cache[id] = await (await fetch(`data/${id}.json`)).json()));
 const gotAll = () => store.get('got:all', []);
 
 // Pre-generated Kokoro clip; browser voice only if the clip is missing.
@@ -160,7 +160,7 @@ function speak(text) {
 let actx;
 function beep(kind) {
   try {
-    actx ??= new (window.AudioContext || window.webkitAudioContext)();
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     const notes = { ok: [660, 990], no: [240, 190], pop: [880] }[kind];
     notes.forEach((f, k) => {
       const t = actx.currentTime + k * 0.12;
@@ -174,7 +174,7 @@ function beep(kind) {
       o.start(t);
       o.stop(t + 0.22);
     });
-  } catch { /* no Web Audio: stay silent */ }
+  } catch (e) { /* no Web Audio: stay silent */ }
 }
 
 // Cards collected this session, so the wall can stamp them in once.
@@ -222,7 +222,7 @@ async function showHome() {
   if (!LEVELS[lv]) return showPicker();
   try {
     data = await load(lv);
-  } catch {
+  } catch (e) {
     main.innerHTML = '<p class="center">内容加载失败，请刷新再试。</p>';
     return;
   }
@@ -278,9 +278,9 @@ async function showHome() {
 const gateWait = cooldown(60000);
 function gateParent(parent) {
   const summary = parent.querySelector('summary');
-  const close = () => { $('.gate')?.remove(); summary.focus(); };
+  const close = () => { main.querySelectorAll('.gate').forEach((g) => g.remove()); summary.focus(); };
   const ask = (left) => {
-    $('.gate')?.remove();
+    main.querySelectorAll('.gate').forEach((g) => g.remove());
     if (!gateWait.ready()) {
       parent.insertAdjacentHTML('afterend', '<div class="gate"><p>答错了, 1 分钟后再试</p></div>');
       return;
@@ -404,7 +404,7 @@ function quiz(c, done) {
     let tries = 0;
     const slots = $('.slots');
     const render = () => {
-      slots.innerHTML = [...word].map((_, k) => `<span>${typed[k]?.ch ?? ''}</span>`).join('');
+      slots.innerHTML = [...word].map((_, k) => `<span>${typed[k] ? typed[k].ch : ''}</span>`).join('');
       main.querySelectorAll('.tile-l[data-k]').forEach((b) => { b.disabled = typed.some((t) => t.k === +b.dataset.k); });
       $('#undo').disabled = !typed.length;
       if (focusLost()) (main.querySelector('.tile-l[data-k]:not(:disabled)') || $('#undo')).focus();

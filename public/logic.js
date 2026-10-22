@@ -44,9 +44,9 @@ const OLD_AUD = { kids: 'L0', students: 'L3', adults: 'L5' };
 export function migrate(p) {
   const out = { ...p };
   const old = Object.keys(out).filter((k) => k.startsWith('got:') && k !== 'got:all');
-  if (old.length) out['got:all'] = [...new Set([...(out['got:all'] ?? []), ...old.flatMap((k) => out[k])])];
+  if (old.length) out['got:all'] = [...new Set([...(out['got:all'] || []), ...[].concat(...old.map((k) => out[k]))])];
   old.forEach((k) => delete out[k]);
-  if (out.aud) { out.lv ??= OLD_AUD[out.aud]; delete out.aud; }
+  if (out.aud) { if (out.lv == null) out.lv = OLD_AUD[out.aud]; delete out.aud; }
   return out;
 }
 
@@ -56,7 +56,7 @@ export const audioFile = (text) =>
 
 // Every text that needs a pre-generated clip.
 export const audioTexts = (cards) =>
-  cards.flatMap((c) => [c.word, ...(c.quiz.type === 'listen' ? c.quiz.options : []), ...englishRuns(c.fact)]);
+  [].concat(...cards.map((c) => [c.word, ...(c.quiz.type === 'listen' ? c.quiz.options : []), ...englishRuns(c.fact)]));
 
 // English runs inside mixed Chinese text, e.g. "说 Check, please!（英式说 the bill）".
 const EN_RUN = /[A-Za-z][A-Za-z0-9'’ ,.!?-]*/g;
@@ -75,7 +75,7 @@ export const linkEnglish = (s) =>
 export function mergeProgress(local, remote) {
   const out = { ...local, ...remote };
   for (const k of Object.keys(out)) {
-    if (k.startsWith('got:')) out[k] = [...new Set([...(local[k] ?? []), ...(remote[k] ?? [])])];
+    if (k.startsWith('got:')) out[k] = [...new Set([...(local[k] || []), ...(remote[k] || [])])];
   }
   const a = local.streak, b = remote.streak;
   if (a && b) out.streak = a.last > b.last || (a.last === b.last && a.count > b.count) ? a : b;

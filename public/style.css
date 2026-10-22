@@ -42,6 +42,10 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
   box-shadow: 1px 1px 0 var(--ink);
 }
 
+/* Flex gap needs Chrome 84; the TV WebView is 66, so space flex items with margins. */
+.levels > * + *, .dots > * + * { margin-left: 8px; }
+.slots > * { margin: 3px; }
+.tiles > *, .stickers > * { margin: 5px; }
 .pick { display: grid; gap: 14px; }
 .tile { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 14px; text-align: left; padding: 16px; }
 .tile .big { font-size: 2.4rem; grid-row: span 2; align-self: center; }
@@ -50,7 +54,7 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .tile:nth-child(3n+2), .topic:nth-child(3n+2) { background: #fff0c2; }
 .tile:nth-child(3n), .topic:nth-child(3n) { background: #d9f6f2; }
 
-.levels { display: flex; gap: 8px; overflow-x: auto; padding: 2px 4px 10px; margin: 0 -4px; }
+.levels { display: flex; overflow-x: auto; padding: 2px 4px 10px; margin: 0 -4px; }
 .chip { flex: none; border: 2px solid var(--ink); border-radius: 99px; background: var(--card); padding: 6px 12px; font-weight: 700; white-space: nowrap; }
 .chip.on { background: var(--grape); color: #fff; }
 .parent { margin-top: 28px; padding-top: 12px; border-top: 2px dashed #d8ccb4; font-size: 0.9rem; }
@@ -74,10 +78,10 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .big-btn { display: block; width: 100%; padding: 16px; margin: 18px 0; font-size: 1.2rem; font-weight: 800; background: var(--pop); color: #fff; }
 
 .wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 10px; }
-.cell { aspect-ratio: 1; display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; background: #eee3cf; box-shadow: none; opacity: 0.6; }
+.cell { aspect-ratio: 1; min-height: 56px; display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; background: #eee3cf; box-shadow: none; opacity: 0.6; }
 .cell.on { background: var(--card); box-shadow: var(--shadow); opacity: 1; }
 
-.dots { display: flex; justify-content: center; gap: 8px; margin: 0 0 12px; }
+.dots { display: flex; justify-content: center; margin: 0 0 12px; }
 .dots span { width: 12px; height: 12px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
 .dots .done { background: var(--mint); }
 .dots .now { background: var(--sun); transform: scale(1.35); }
@@ -99,10 +103,10 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .opt.wrong { background: var(--pop); color: #fff; animation: shake 0.3s; }
 .opt.tried { opacity: 0.35; box-shadow: none; animation: shake 0.3s; }
 
-.slots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 8px 0 18px; }
+.slots { display: flex; flex-wrap: wrap; justify-content: center; margin: 5px 0 15px; }
 .slots span { width: 36px; height: 44px; display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; border-bottom: 4px solid var(--ink); }
 .slots.miss span { color: var(--pop); animation: shake 0.3s; }
-.tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 8px; }
+.tiles { display: flex; flex-wrap: wrap; justify-content: center; margin: -5px 0 3px; }
 .tile-l { width: 48px; height: 48px; font-size: 1.4rem; font-weight: 800; background: var(--sun); }
 .tile-l:disabled { opacity: 0.25; box-shadow: none; }
 .undo { display: block; margin: 4px auto 0; background: var(--card); }
@@ -111,7 +115,7 @@ button.tile:active, .topic:active, .big-btn:active, .opt:not(:disabled):active, 
 .ok { color: #138a7e; }
 .no { color: var(--pop); }
 
-.stickers { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 16px 0 8px; font-size: 3.2rem; }
+.stickers { display: flex; flex-wrap: wrap; justify-content: center; margin: 11px 0 3px; font-size: 3.2rem; }
 .stickers span { display: grid; place-items: center; width: 76px; height: 76px; background: #fff0c2; border: 3px solid var(--ink); border-radius: 18px;
   box-shadow: var(--shadow); animation: stamp 0.35s calc(0.25s + var(--k, 0) * 0.18s) cubic-bezier(.3, 1.6, .5, 1) both; }
 .stickers span:nth-child(even) { rotate: 4deg; }
