@@ -58,7 +58,7 @@ async function pull() {
   }
   save(migrate(p));
   if (synced) push();
-  showHome();
+  goHome();
 }
 
 // Save to the cloud, then wipe this browser, so the next person to log in here starts clean.
@@ -67,7 +67,7 @@ async function logout() {
   const r = await api({ method: 'PUT', body: JSON.stringify(snapshot()) }).catch(() => null);
   if (!r?.ok) return alert('进度还没同步上去，联网后再退出');
   Object.keys(localStorage).filter((k) => k.startsWith('lp:')).forEach((k) => localStorage.removeItem(k));
-  showHome();
+  goHome();
 }
 
 async function showAccount(msg = '', signup = false) {
@@ -85,7 +85,7 @@ async function showAccount(msg = '', signup = false) {
       <button type="button" class="link" id="back">← 先不用了</button>
     </form>`;
   $('#mode').onclick = () => showAccount('', !signup);
-  $('#back').onclick = showHome;
+  $('#back').onclick = goBack;
   focusFirst('input');
   $('form').onsubmit = async (e) => {
     e.preventDefault();
@@ -107,6 +107,23 @@ const $ = (sel) => main.querySelector(sel);
 // TV remote: every re-render drops focus, so land it on the page's main button.
 const focusFirst = (sel) => (main.querySelector(`${sel}:not(:disabled)`) || main.querySelector('button:not(:disabled)'))?.focus();
 const focusLost = () => { const a = document.activeElement; return !a || a === document.body || a.disabled; };
+
+// The remote's Back key = the on-screen back button. Each sub-page pushes one history
+// entry plus the function that re-renders its parent (without pushing again).
+const backs = [];
+function forward(render, back) {
+  backs.push(back);
+  history.pushState({ d: backs.length }, '');
+  render();
+}
+const goBack = () => (backs.length ? history.back() : showHome()); // no entry of ours (e.g. reload): just go home
+const goHome = () => (backs.length ? history.go(-backs.length) : showHome());
+addEventListener('popstate', (e) => {
+  const d = e.state?.d ?? 0;
+  let back = showHome;
+  while (backs.length > d) back = backs.pop();
+  d === 0 ? showHome() : back();
+});
 
 // Arrow keys move between buttons; we do it ourselves since not every TV WebView does.
 const DIRS = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
@@ -243,11 +260,11 @@ async function showHome() {
   main.querySelectorAll('.chip').forEach((b) => {
     b.onclick = () => { store.set('lv', b.dataset.lv); showHome(); };
   });
-  $('#sync').onclick = () => (pw() ? logout() : showAccount());
+  $('#sync').onclick = () => (pw() ? logout() : forward(() => showAccount(), showHome));
   if (ready) $('#up').onclick = () => { store.set('lv', next); showHome(); };
-  if (data.cards.length) $('#go').onclick = () => play(pickDaily(data.cards, got), showHome, data.cards);
+  if (data.cards.length) $('#go').onclick = () => forward(() => play(pickDaily(data.cards, got), goBack, data.cards), showHome);
   main.querySelectorAll('.topic').forEach((b) => {
-    b.onclick = () => showTopic(data.topics.find((t) => t.id === b.dataset.t));
+    b.onclick = () => forward(() => showTopic(data.topics.find((t) => t.id === b.dataset.t)), showHome);
   });
   focusFirst(data.cards.length ? '#go' : '.topic');
 }
@@ -266,17 +283,17 @@ function showTopic(t) {
     </div>
     <button class="big-btn" id="home">← 回到首页</button>`;
   list.forEach((c) => fresh.delete(c.id)); // stamp each new sticker only once
-  $('#go').onclick = () => play(pickDaily(list, got), back, list);
-  $('#home').onclick = showHome;
+  $('#go').onclick = () => forward(() => play(pickDaily(list, got), goBack, list), back);
+  $('#home').onclick = goBack;
   main.querySelectorAll('.cell.on').forEach((b) => {
-    b.onclick = () => {
+    b.onclick = () => forward(() => {
       const c = list.find((x) => x.id === b.dataset.id);
       main.innerHTML = cardHTML(c) + '<button class="big-btn" id="back">← 回到贴纸墙</button>';
       bindSay(c);
       speak(c.word);
-      $('#back').onclick = back;
+      $('#back').onclick = goBack;
       focusFirst('#back');
-    };
+    }, back);
   });
   focusFirst('#go');
 }
