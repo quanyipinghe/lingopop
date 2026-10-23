@@ -1,4 +1,6 @@
 import { today, nextStreak, displayStreak, shuffle, pickDaily, audioFile, linkEnglish, mergeProgress, migrate, nearest, mathGate, cooldown } from './logic.js';
+// Chrome 66 (TV) throws on :focus-visible; style.css then falls back to plain :focus.
+try { document.querySelector(':focus-visible'); } catch (e) { document.documentElement.className += ' no-fv'; }
 
 // Levels follow the Cambridge English path (CEFR); content lives in data/<id>.json.
 const LEVELS = {

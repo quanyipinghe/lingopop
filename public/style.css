@@ -17,10 +17,12 @@ body { margin: 0 auto; max-width: 640px; padding: 16px; min-height: 100vh; displ
 main { flex: 1; }
 button { font: inherit; color: inherit; cursor: pointer; }
 button:disabled { cursor: default; }
-:focus-visible { outline: 4px solid var(--grape); outline-offset: 3px; }
-/* Old TV WebViews lack :focus-visible and drop the second rule, keeping the :focus ring. */
-button:focus, summary:focus, input:focus { outline: 4px solid var(--grape); outline-offset: 3px; }
-:focus:not(:focus-visible) { outline: none; }
+/* Focus fills with ink, a colour no button uses (grape = picked level, sun/pop/mint mean things).
+   Right/wrong answers keep their colour. Old TV WebViews lack :focus-visible, so app.js tags
+   <html class="no-fv"> there and plain :focus takes over; phones keep no colour after a tap. */
+:focus { outline: none; }
+:focus-visible:not(.right):not(.wrong) { background-color: var(--ink) !important; color: #fff !important; }
+.no-fv button:focus:not(.right):not(.wrong), .no-fv summary:focus, .no-fv input:focus { background-color: var(--ink) !important; color: #fff !important; }
 
 header { text-align: center; margin: 8px 0 20px; }
 .logo { font-size: 2rem; font-weight: 900; color: var(--ink); text-decoration: none; letter-spacing: -0.5px; }
